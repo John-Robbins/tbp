@@ -1,7 +1,7 @@
 # Based off the excellent work at https://github.com/just-the-docs/just-the-docs-template.
 # Thanks to all!
 
-name: Deploy Jekyll site to Pages
+name: Build/Deploy Docs
 
 # Only trigger on the main branch and only if any files in the ./docs directory changed.
 on:
