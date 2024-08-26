@@ -6,7 +6,10 @@
 
 Badges I need:
 
-- Ancient Technology
+![https://en.wikipedia.org/wiki/Tiny_BASIC](https://img.shields.io/badge/Ancient_Technology-blue)
+
+[![Docs CI](https://github.com/John-Robbins/tbp/actions/workflows/Build%20and%20Deploy%20Site%20to%20Pages.yml/badge.svg)](https://github.com/John-Robbins/tbp/actions/workflows/Build%20and%20Deploy%20Site%20to%20Pages.yml)
+
 - Continuous Integration: Pass/Fail
 - Unit Tests: count
 - Code Coverage: 99%
