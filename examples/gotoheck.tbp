@@ -1,0 +1,24 @@
+05 REM Test program for the Tiny BASIC in Python debugger.
+
+10 LET C = 200
+20 LET H = 200
+25 LET P = 0
+30 GOSUB 400
+40 GOTO 60
+50 PR "Never run, I hope!"
+60 IF C = 200 THEN GOSUB 400
+70 IF H = 200 IF C = 200 THEN GOSUB 400
+80 IF C = 2 GOTO 50
+90 IF C = 1 IF H = 3 GOTO 50
+100 GOSUB C+H
+130 IF C = 200 GOSUB H+C
+200 PR "I bid thee, adieu!"
+240 GOTO 700
+
+
+
+400 LET P=P+1
+420 PR "400 called ";P;" times"
+450 RETURN
+
+700 END

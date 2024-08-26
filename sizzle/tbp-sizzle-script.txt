@@ -1,0 +1,65 @@
+#!/usr/bin/env python3.10
+
+import random
+import time
+
+import iterm2
+
+# This script was created with the "basic" environment which does not support adding dependencies
+# with pip.
+
+script = [
+    "python -m tbp",
+    "REM Welcome to tbp! Let's play a game of Rock, Paper, Scissors.",
+    '%loadfile "./examples/srps.tbp"',
+    "run",
+    "0",
+    "3",
+    "4",
+    "REM Wow! So Sassy!Lets cheat by using the built in tbp debugger.",
+    "REM Let's set a breakpoint on a line in the program.",
+    "%break 610",
+    "run",
+    "0",
+    "REM We stopped on the line where Sassy does their pick.",
+    "REM Let's step over.",
+    "%step",
+    "REM What did Sassy game pick?",
+    "%vars",
+    "REM You can change the variables, too.",
+    "REM I'll make Sassy pick scissors since I picked rock.",
+    "LET C=2",
+    "%vars",
+    "REM Let's continue running.",
+    "%continue",
+    "4",
+    "REM Tiny BASIC programming is hard with no IDE support.",
+    "REM But Tiny BASIC in Python has a linter to catch common errors.",
+    '%loadfile "./examples/lintdemo.tbp"',
+    "%lint",
+    "REM Wow! Looks like I've got three errors I need to fix.",
+    "REM I hope you enjoy Tiny BASIC in Python!",
+    "%q",
+]
+
+
+async def main(connection):
+    app = await iterm2.async_get_app(connection)
+    window = app.current_terminal_window
+    if window is not None:
+        session = app.current_terminal_window.current_tab.current_session
+        for text in script:
+            for char in text:
+                await session.async_send_text(char)
+                time.sleep(random.uniform(0.1, 0.2))
+            await session.async_send_text("\n")
+            if len(text) == 1:
+                time.sleep(2)
+            else:
+                time.sleep(random.uniform(0.75, 1.25))
+    else:
+        # You can view this message in the script console.
+        print("No current window")
+
+
+iterm2.run_until_complete(main)

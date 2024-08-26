@@ -1,0 +1,218 @@
+00001 REM Sassy Rock, Paper, Scissors!
+00002 REM By John Robbins
+00003 REM https://github.com/John-Robbins/tbp
+00004 REM Rules checked at the World Rock Paper Scissors Association
+00005 REM https://wrpsa.com/the-official-rules-of-rock-paper-scissors/
+00006 REM Who knew there was a WRPS Association?
+
+00020 REM Key Variables:
+00021 REM H is human's choice.
+00022 REM C is tbp-AI's choice.
+00023 REM D = # Games tied.
+00024 REM E = # Games the human won.
+00025 REM F = # Games the computer won.
+00030 REM R = result of a throw.
+
+00040 REM Procedures & Parameters/Returns:
+00041 REM 32000 Logo Procedure.
+00042 REM 32050 Get a verb procedure.
+00043 REM 32500 Modulo Procedure (M mod N)=R: M = num to divide, N = divisor, R = result
+00044 REM 31400 Print choice procedure, parameter V=(0,1,2)
+00045 REM 31200 The Insulter procedure.
+00046 REM 31100 The rules procedure. Reads D, E, F.
+00047 REM 30700 The prompt for input. H holds choice: 0, 1, or 2 on return. Will quit the program, too.
+00048 REM 30600 Update stats (wins, ties) procedure, shows stats. R read for result.
+00049 REM 30100 Show who threw what procedure.
+00050 REM 24500 Displays results. R, C, H values read by procedure.
+00051 REM 30640 Prints the stats. Reads D, E, F.
+
+00100 REM Key values.
+00105 REM 0 = Rock
+00110 REM 1 = Paper
+00115 REM 2 = Scissors
+00120 REM R = 0 Means tie.
+00125 REM R = 1 Means the human won.
+00130 REM R = 2 Means the computer won.
+
+00299 REM Program starts here.
+
+00300 LET N = 3
+00310 LET I = 9999
+00315 LET D = 0
+00320 LET E = 0
+00325 LET F = 0
+
+00399 REM Show the logo.
+00400 GOSUB 32000
+
+00439 REM Insult the user. :)
+00440 PRINT "Behold the power of Tiny BASIC in Python AI! I shall beat you! Bwahahaha!"
+00441 PRINT
+
+00459 REM Show the rules.
+00460 GOSUB 31100
+
+00599 REM Prompt the user, and where we loop back to.
+00600 GOSUB 30700
+
+00609 REM The computer's choice.
+00610 LET C = RND(3)
+
+00699 REM The showing of hands.
+00700 GOSUB 30100
+
+00898 REM https://stackoverflow.com/questions/2795399/one-liner-to-determine-who-wins-in-rock-paper-scissors
+00899 REM Calculate the remainder (i.e., the winner.)
+00900 LET M = N + H - C
+00910 GOSUB 32500
+
+00929 REM Keep the game stats.
+00930 REM GOSUB 30700
+
+00959 REM Show who threw what.
+00960 REM GOSUB 30100
+
+00979 REM Show the results.
+00980 GOSUB 30600
+
+00999 REM Loop back for the next throw.
+01000 GOTO 00600
+
+01001 END
+
+
+24499 REM Displays results. R holds result, H holds human's choice, C holds computer's choice.
+24500 IF R = 0 GOTO 24600
+24510 IF R = 1 GOSUB 24650
+24520 IF R = 2 GOSUB 24690
+24530 GOSUB 31400
+24535 GOSUB 32050
+24550 IF R = 1 GOSUB 24690
+24555 IF R = 2 GOSUB 24660
+24560 GOSUB 31400
+24565 RETURN
+
+24599 REM Tie display.
+24600 PRINT "It's a tie."
+24610 RETURN
+
+24650 PRINT "Human's ";
+24655 GOTO 24665
+24660 PRINT "human's ";
+24665 LET V = H
+24670 RETURN
+
+24690 PRINT "tbp-AI's ";
+24695 LET V = C
+24700 RETURN
+
+30099 REM Print who throws what routine.
+30100 PRINT
+30110 PRINT "Human throws ";
+30115 LET V = H
+30120 GOSUB 31400
+30125 PRINT ". tbp-AI throws ";
+30130 LET V = C
+30135 GOSUB 31400
+30140 PRINT "."
+30145 RETURN
+
+30599 REM Keeps the game stats & prints running total. R param holds game result.
+30600 IF R = 0 LET D = D + 1
+30605 IF R = 1 LET E = E + 1
+30610 IF R = 2 LET F = F + 1
+30615 GOSUB 24500
+30620 GOSUB 30640
+30625 RETURN
+
+30639 REM Prints the stats.
+30640 PRINT
+30645 PRINT "Human wins=";E;" tbp-AI wins=";F;" Ties=";D
+30650 PRINT
+30655 RETURN
+
+30699 REM The prompt for human input.
+30700 PRINT "Enter your choice, human."
+30710 PRINT "0=Rock, 1=Paper, 2=Scissors, 3=Be insulted again, 4=Quit."
+30715 INPUT H
+30720 IF H > 4 GOTO 30750
+30725 IF H = 3 GOTO 30790
+30730 IF H = 4 GOTO 30820
+30735 RETURN
+30750 PRINT H;"? Really? Try that again."
+30755 GOTO 30700
+30790 PRINT
+30795 GOSUB 31200
+30800 GOTO 30700
+30820 LET I = RND(5)
+30845 PRINT "Final stats:"
+30850 GOSUB 30640
+30855 IF I = 0 PRINT "Cheerio!"
+30860 IF I = 1 PRINT "Good day!"
+30865 IF I = 2 PRINT "¡Adios!"
+30870 IF I = 3 PRINT "Ciao!"
+30875 IF I = 4 PRINT "Bye!"
+30980 END
+
+31099 REM The Rules
+31100 PRINT "There are two rules in Sassy Rock, Paper, Scissors:"
+31105 PRINT "  1) Rock crushes scissors. Scissors cut paper. Paper smothers rock."
+31110 PRINT "  2) Tiny BASIC in Python AI beats the human."
+31115 PRINT
+31129 RETURN
+
+31199 REM The Insulter! procedure.
+31200 LET I = RND(8)
+31215 IF I = 0 PRINT "You don't stand a chance against the power of Tiny BASIC in Python!"
+31220 IF I = 1 PRINT "Tiny BASIC in Python is superior to the human!"
+31225 IF I = 2 PRINT "Sassy Rock, Paper, Scissors destroys all who challenge!"
+31230 IF I = 3 PRINT "Give up now, Tiny BASIC in Python is superior at this measly game!"
+31235 IF I = 4 PRINT "Why bother? Tiny BASIC in Python will always be better!"
+31240 IF I = 5 PRINT "Tiny BASIC in Python can control nuclear power plants and you want an insult?"
+31245 IF I = 6 PRINT "Think Tiny BASIC in Python AI get some of that sweet, sweet, AI funding?"
+31250 IF I = 7 PRINT "Tiny BASIC in Python: it's just better than a human!"
+31255 PRINT
+31260 RETURN
+
+31399 REM Print choice routine, V is the choice.
+31400 IF V = 0 PRINT "rock";
+31405 IF V = 1 PRINT "paper";
+31410 IF V = 2 PRINT "scissors";
+31415 RETURN
+
+32499 REM The modulo routine: (M mod N)=R
+32500 LET R = M - (N * (M / N))
+32510 RETURN
+
+31999 REM The logo routine.
+32000 PRINT " ____"
+32005 PRINT "/ ___|  __ _ ___ ___ _   _"
+32010 PRINT "\___ \ / _` / __/ __| | | |"
+32015 PRINT " ___) | (_| \__ \__ \ |_| |"
+32020 PRINT "|____/ \__,_|___/___/\__, |"
+32025 PRINT "                      |___/ Rock Paper Scissors!"
+32030 PRINT
+32035 RETURN
+
+32048 REM Get's a verb.
+32049 REM https://www.thesaurus.com/browse/destroys
+32050 LET K = RND(18)
+32055 IF K = 0 PRINT " consumes ";
+32060 IF K = 1 PRINT " crushes ";
+32065 IF K = 2 PRINT " wrecks ";
+32070 IF K = 3 PRINT " dismantles ";
+32075 IF K = 4 PRINT " ends ";
+32080 IF K = 5 PRINT " eradicates ";
+32085 IF K = 6 PRINT " guts ";
+32090 IF K = 7 PRINT " erases ";
+32095 IF K = 8 PRINT " razes ";
+32100 IF K = 9 PRINT " shatters ";
+32105 IF K = 10 PRINT " smashes ";
+32110 IF K = 11 PRINT " annihilates ";
+32115 IF K = 12 PRINT " extinguishes ";
+32120 IF K = 13 PRINT " extirpates ";
+32125 IF K = 14 PRINT " nukes ";
+32130 IF K = 15 PRINT " torpedoes ";
+32135 IF K = 16 PRINT " vaporizes ";
+32140 IF K = 17 PRINT " zaps ";
+32145 RETURN

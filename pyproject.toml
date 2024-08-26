@@ -1,0 +1,260 @@
+[project]
+name = "tbp"
+dynamic = ["version"]
+readme = "README.md"
+description = "Tiny BASIC interpreter and debugger written in Python"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = ["Tiny BASIC", "interpreter"]
+authors = [{ name = "John Robbins", email = "john@jprobbins.com" }]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+
+    "Intended Audience :: Developers",
+    # Sadly, Tiny BASIC is not an option. 😿
+    "Programming Language :: Basic",
+    "Topic :: Software Development :: Interpreters",
+    "Topic :: Software Development :: Debuggers",
+    "License :: OSI Approved :: MIT License",
+
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "sortedcontainers >=2.4",
+    "sortedcontainers-stubs>2.4"
+]
+
+[project.optional-dependencies]
+dev=[
+    "coverage",
+    "mypy",
+    "pylint",
+    "pytest",
+    "ruff",
+    "hatch"
+]
+
+[project.scripts]
+tbp = "tbp:__main__.main"
+
+[project.urls]
+Documentation = "https://github.com/John-Robbins/tbp"
+Source = "https://github.com/John-Robbins/tbp"
+Issues = "https://github.com/John-Robbins/tbp/issues"
+
+[tool.hatch.version]
+path = "src/tbp/__init__.py"
+
+[tool.hatch.envs.default]
+dependencies = ["coverage[toml]>=7.6",
+"pytest>=8.3",
+"mypy>=1.11",
+"pylint>=3.2",
+"ruff>=0.6",]
+
+# This me trying to duplicate my awesome, easy to use makefile in case an OS
+# does not have make installed. I wish hatch had a simple calc demo project
+# that shows real world day to day usage.
+# There's this, https://github.com/ofek/hatch-showcase, but it never shows
+# actually running hatch as I presume you would in day to day development.
+# Use the following command for equivalence:
+# hatch run test
+[tool.hatch.envs.default.scripts]
+mypy_it = "mypy --config-file pyproject.toml src/ tests/"
+ruff_it = "ruff check --config ./pyproject.toml src/ tests/"
+pylint_it = "pylint --rcfile pyproject.toml src/ tests/"
+cov = "coverage run -p -m pytest --maxfail=1 -console_output_style=classic"
+cov-report = "coverage report --precision=2 --show-missing --sort=Cover"
+covpercent=[
+    "coverage json",
+    "python -c \"import json;print(json.load(open('coverage.json'))['totals']['percent_covered'])\""
+]
+test = ["mypy_it", "ruff_it", "pylint_it", "cov", "cov-report"]
+
+# I've set these because I don't like the Hatch defaults that change code, so
+# in case someone runs these, they'll get an error.
+[tool.hatch.envs.hatch-static-analysis.scripts]
+format-check = "..."
+format-fix = "..."
+lint-check = "..."
+lint-fix = "..."
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.12.1"]
+
+
+####################
+# ruff tool settings
+####################
+# Yes, turn everything on!
+[tool.ruff]
+preview = true
+lint.select = ["ALL"]
+
+#######
+# Preview rules that aren't ready for prime time.
+#######
+# DOC201: https://docs.astral.sh/ruff/rules/docstring-missing-returns/
+# PLR6301: https://docs.astral.sh/ruff/rules/no-self-use/
+# DOC501: https://docs.astral.sh/ruff/rules/docstring-missing-exception/
+# DOC402: https://docs.astral.sh/ruff/rules/docstring-missing-yields/
+
+#######
+# Good rules that I want suppressed.
+#######
+# ERA001: https://docs.astral.sh/ruff/rules/commented-out-code/
+# D203: https://docs.astral.sh/ruff/rules/one-blank-line-before-class/
+# FIX002: https://docs.astral.sh/ruff/rules/line-contains-todo/
+# TD003: https://docs.astral.sh/ruff/rules/missing-todo-link/
+# T201: https://docs.astral.sh/ruff/rules/print/
+# D212: https://docs.astral.sh/ruff/rules/multi-line-summary-first-line/
+lint.ignore = [
+    "ERA001",
+    "D203",
+    "FIX002",
+    "TD003",
+    "T201",
+    "D212",
+
+    # Preview rules.
+    "DOC201",
+    "PLR6301",
+    "DOC501",
+    "DOC402",]
+lint.isort = { known-first-party = [
+    "tbp",
+], required-imports = [
+    "from __future__ import annotations",
+] }
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.ruff.lint.pylint]
+max-args = 6
+max-public-methods = 39
+
+[tool.ruff.lint.per-file-ignores]
+# S101: https://docs.astral.sh/ruff/rules/assert/
+# PLR2004: https://docs.astral.sh/ruff/rules/magic-value-comparison/
+"tests/*" = ["S101", "PLR2004"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = "all"
+
+
+####################
+# coverage tool settings
+####################
+
+[tool.coverage.run]
+branch = true
+dynamic_context = "test_function"
+
+[tool.coverage.lcov]
+output = ".coverage.lcov"
+
+[tool.coverage.paths]
+tbp = ["src/tbp", "*/tbp/src/tbp"]
+tests = ["tests", "*/tbp/tests"]
+
+
+[tool.coverage.report]
+skip_empty = true
+exclude_also = [
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+####################
+# mypy tool settings
+####################
+
+[tool.mypy]
+warn_unused_ignores = false
+strict = true
+
+####################
+# pytest tool settings
+####################
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+log_cli = true
+
+
+####################
+# pylint tool settings
+# Ideas from here:
+# https://chezsoi.org/lucas/blog/pylint-strict-base-configuration.html
+####################
+[tool.pylint."messages control"]
+enable = [
+    "bad-inline-option",
+    "deprecated-pragma",
+    "file-ignored",
+    "use-symbolic-message-instead",
+    "useless-suppression",
+]
+
+[tool.pylint.main]
+fail-on = "I"
+load-plugins = [
+    "pylint.extensions.bad_builtin",
+    "pylint.extensions.code_style",
+    "pylint.extensions.comparison_placement",
+    "pylint.extensions.consider_refactoring_into_while_condition",
+    "pylint.extensions.docparams",
+    "pylint.extensions.dunder",
+    "pylint.extensions.eq_without_hash",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.mccabe",
+    "pylint.extensions.no_self_use",
+    "pylint.extensions.overlapping_exceptions",
+    "pylint.extensions.private_import",
+    "pylint.extensions.redefined_loop_name",
+    "pylint.extensions.set_membership",
+    "pylint.extensions.typing",
+]
+
+# R0801: https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/duplicate-code.html
+# R0902: https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-instance-attributes.html
+# R0903: https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-few-public-methods.html
+# R0904: https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-public-methods.html
+# R0911: https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-return-statements.html
+# R0913: https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-arguments.html
+# C0302: https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/too-many-lines.html
+
+disable = ["fixme", "R0801","R0902", "R0903", "R0904", "R0911", "R0913", "C0302"]
+
+####################
+# pyright tool settings.
+####################
+[tool.pyright]
+reportUnusedImport = false
+reportUnnecessaryComparison = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+
+
+####################
+# build tool settings
+####################
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

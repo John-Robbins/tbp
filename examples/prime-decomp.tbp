@@ -1,0 +1,42 @@
+01 REM Originally from: https://rosettacode.org/wiki/Prime_decomposition#Tiny_BASIC
+02 REM Modified for tbp to make the output cooler. :)
+
+10 REM Get the input.
+15 PRINT "Prime Decomposition!"
+20 PRINT "Enter a number: ";
+25 INPUT N
+
+39 REM Start the process. K is the flag so we don't start with "*"
+40 PRINT "N = ";
+45 LET K = 0
+
+60 REM If it's a negative number, flip to positive.
+70 IF N<0 THEN LET N = -N
+80 REM If less than 2, nothing to do.
+90 IF N<2 THEN GOTO 800
+
+099 REM The main work loop.
+100 LET I = 2
+110 REM Are we done?
+130 IF I*I > N THEN GOTO 400
+140 REM Nope, print out this prime.
+150 IF (N/I)*I = N THEN GOTO 600
+170 LET I = I + 1
+190 GOTO 130
+
+400 IF K = 0 GOTO 430
+420 PRINT " * ";
+430 PRINT N
+440 END
+
+598 REM Prepare N for the next value and print out this number.
+600 LET N = N / I
+620 IF K = 0 THEN GOTO 650
+640 PRINT " * ";
+650 LET K = 1
+670 PRINT I;
+680 GOTO 100
+
+799 REM If N<2, just print N and end.
+800 PRINT N
+810 END

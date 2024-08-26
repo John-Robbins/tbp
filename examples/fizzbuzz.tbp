@@ -1,0 +1,17 @@
+001 REM Original FizzBuzz from https://rosettacode.org/wiki/FizzBuzz/Basic#Tiny_BASIC
+002 REM Modified to run in Tiny BASIC for Python by adding line numbers back.
+
+090  LET I=1
+100  IF (I/15)*15<>I THEN GOTO 200
+110  PRINT "FizzBuzz"
+120  GOTO 5000
+200 IF (I/3)*3<>I THEN GOTO 300
+210 PRINT "Fizz"
+220 GOTO 5000
+300 IF (I/5)*5<>I THEN GOTO 400
+320 PRINT "Buzz"
+330 GOTO 5000
+400  PRINT I
+5000 LET I=I+1
+5010 IF I<=100 THEN GOTO 100
+5020 END

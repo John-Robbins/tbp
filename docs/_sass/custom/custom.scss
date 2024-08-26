@@ -1,0 +1,5 @@
+// Thank goodness I found this as the default line hight for code boxes is 1.6.
+// https: //github.com/just-the-docs/just-the-docs/discussions/932
+pre.highlight {
+    line-height: 1;
+}

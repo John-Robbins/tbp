@@ -1,0 +1,12 @@
+10 REM Displays the ultra-sexy tbp logo.
+11 REM You are welcome!
+20 PR "   _______ ____"
+30 PR "  |__   __|  _ \"
+40 PR "     | |  | |_) |_ __"
+50 PR "     | |  |  _ <| '_ \"
+60 PR "     | |  | |_) | |_) |"
+70 PR "     |_|  |____/| .__/"
+80 PR "                | |"
+90 PR "                |_|"
+100 PR "   Party like it's 1976!"
+110 END

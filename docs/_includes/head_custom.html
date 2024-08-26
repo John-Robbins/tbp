@@ -1,0 +1,17 @@
+<!-- Found the idea here: https://github.com/daattali/beautiful-jekyll/blob/master/_includes/mathjax.html-->
+<!-- Much easier than the Just The Docs way of adding MathJax.-->
+<!-- Set 'mathjax: true' in the yaml header to enable for a page.-->
+<!-- Use $$eqn$$ or \\eqn\\ to denote equation.-->
+{% if page.mathjax %}
+<script type="text/javascript">
+    MathJax = {
+        options: {
+            skipHtmlTags: [
+                'script', 'noscript', 'style', 'textarea', 'pre', 'code'
+            ]
+        }
+    };
+</script>
+<script type="text/javascript" async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+{% endif %}

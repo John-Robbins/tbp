@@ -1,0 +1,22 @@
+01 REM From: https://github.com/winny-/tinybasic.rkt/blob/master/tinybasic-examples/examples/fizzbuzz.rkt
+02 REM By Winston (Winny) Weinert for his Racket implementation of Tiny BASIC.
+
+
+100 REM Fizz Buzz
+120 LET I=1
+125 INPUT Z
+130
+135 LET A = 0
+140 IF I/3*3=I THEN GOSUB 280
+160 IF I/5*5=I THEN GOSUB 320
+180 IF A = 0 THEN PRINT I;
+200 PRINT
+220 LET I = I + 1
+240 IF I <= Z THEN GOTO 135
+260 END
+280 PRINT "Fizz";
+290 LET A = 1
+300 RETURN
+320 PRINT "Buzz";
+330 LET A = 1
+340 RETURN

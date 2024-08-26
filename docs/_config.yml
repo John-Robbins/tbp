@@ -1,0 +1,66 @@
+title: Tiny BASIC in Python
+description: A Tiny BASIC interpreter with a debugger and linter built in.
+theme: just-the-docs
+
+url: https://John-Robbins.github.io/tbp
+repository: John-Robbins/tbp
+
+# Aux links for the upper right navigation
+aux_links:
+  "Tiny BASIC in Python on GitHub": https://github.com/John-Robbins/tbp
+
+###############################################################################
+exclude:
+ # from https://github.com/jekyll/jekyll/blob/master/lib/site_template/_config.yml:
+   - .sass-cache/
+   - .jekyll-cache/
+   - gemfiles/
+   - Gemfile
+   - Gemfile.lock
+   - node_modules/
+   - vendor/bundle/
+   - vendor/cache/
+   - vendor/gems/
+   - vendor/ruby/
+   - LICENSE.txt
+
+###############################################################################
+# Enable safe mode
+#safe: true
+
+plugins:
+  - jemoji
+  - jekyll-relative-links
+
+whitelist:
+  - jemoji
+  - jekyll-relative-links
+
+###############################################################################
+
+# Ensure site search is turned on. The default is true, but this makes it
+# explicit so I remember it's on.
+search_enabled: true
+
+search:
+  focus_shortcut_key: 'k'
+
+###############################################################################
+
+# For copy button on code
+enable_copy_code_button: true
+
+###############################################################################
+
+# These seem like good ideas.
+liquid:
+   error_mode: strict
+   strict_filters: true
+
+
+###############################################################################
+
+# Footer content appears at the bottom of every page's main content
+# Note: The footer_content option is deprecated and will be removed in a future major release.
+# Please use `_includes/footer_custom.html` for more robust markup / liquid-based content.
+footer_content: "Copyright &copy; 2024 John Robbins. Distributed by an <a href=\"https://github.com/John-Robbins/tbp/tree/main/LICENSE.txt\">MIT license.</a>"

@@ -1,0 +1,26 @@
+
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:page_facing_up: Legal\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:page_facing_up: Legal\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qtbp Command Language\n{: .no_toc }\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Qtbp Command Language\n{: .no_toc }\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:joy_cat:\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:joy_cat:\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qtbp Command Language\n{:.no_toc}\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QSee the discussion of those in the Functions section below.\\E$"}
+{"rule":"CURRENCY","sentence":"^\\QThe parameter to \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q is the range and the random number returned is between \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q$.\\E$"}
+{"rule":"MULTIPLICATION_SIGN","sentence":"^\\QThe read routine is at address 276 (0x114) and the write routine is at 280 (0x118).\\E$"}
+{"rule":"MULTIPLICATION_SIGN","sentence":"^\\QFor the Motorola 6800 CPU, that is 265 (0x100), and tbp does the same.\\E$"}
+{"rule":"AS_IS_VBG","sentence":"^\\QError #330: IF is missing the relational operator, but found '%s'.\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\QThe file is tiny_basic_grammar.ebnf in the tbp repository.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe file is tiny_basic_grammar.ebnf in the tbp repository.\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\QI like the left_rec tool from CyberZHG the best.\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\QIn all, my Scanner._handle_keyword_or_identifier method is embarrassing.\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:raised_eyebrow: :grimacing: :sob:\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:raised_eyebrow: :grimacing: :sob:\\E$"}
+{"rule":"THREE_NN","sentence":"^\\QAlso, please don't point me at some random project template generator on GitHub that says it will set up my project.\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:scream_cat:\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:scream_cat:\\E$"}
+{"rule":"MANY_NN_U","sentence":"^\\QWhy are there so many build/packaging systems?\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe examples directory contains a number of sample Tiny BASIC programs for your enjoyment.\\E$"}
+{"rule":"AS_IS_VBG","sentence":"^\\QError #330: IF is missing the relational operator but found '%s'.\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe examples directory holds sample Tiny BASIC programs for your enjoyment.\\E$"}
