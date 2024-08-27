@@ -4,8 +4,9 @@ name: Code CI
 
 # Only trigger on the main branch
 on:
-  push:
-    branches: ["main"]
+  # DON"T FORGET TO UNCOMMENT THESE LINE WHEN DONE! 😹😹
+  # push:
+    # branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab, which is 
   # kind of important for developing this action!
@@ -13,7 +14,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -23,11 +23,12 @@ jobs:
         python-version: ["3.12"]
 
     steps:
+      - name: Checkout
       - uses: action/checkout@4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      # You can test your matrix by printing the current Python version
+      # Report the OS and release.
       - name: Display Python version
         run: python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")
