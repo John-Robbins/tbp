@@ -1,5 +1,4 @@
 # My attempt at creating the tbp CI action.
-
 name: Code CI
 
 # Only trigger on the main branch
@@ -17,19 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # I want runs on all three operating systems.
         os: [ubuntu-latest, macos-latest, windows-latest]
-        # I've only used Python 3.12.1 so we'll stick with the latest.
         python-version: ["3.12"]
-
     steps:
     - name: Checkout Code
       uses: action/checkout@4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    # Report the OS and release.
-    - name: Display OS version
-      run: |
-        python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")
