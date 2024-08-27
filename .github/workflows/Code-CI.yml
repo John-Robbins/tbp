@@ -23,12 +23,13 @@ jobs:
         python-version: ["3.12"]
 
     steps:
-      - name: Checkout
-        uses: action/checkout@4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      # Report the OS and release.
-      - name: Display Python version
-        run: python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")
+    - name: Checkout Code
+      uses: action/checkout@4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    # Report the OS and release.
+    - name: Display OS version
+      run: |
+        python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")
