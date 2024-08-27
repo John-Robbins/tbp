@@ -1,0 +1,33 @@
+# My attempt at creating the tbp CI action.
+
+name: Code CI
+
+# Only trigger on the main branch
+on:
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab, which is 
+  # kind of important for developing this action!
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # I want runs on all three operating systems.
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        # I've only used Python 3.12.1 so we'll stick with the latest.
+        python-version: ["3.12"]
+
+    steps:
+      - uses: action/checkout@4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # You can test your matrix by printing the current Python version
+      - name: Display Python version
+        run: python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")
