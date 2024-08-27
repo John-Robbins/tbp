@@ -1,5 +1,6 @@
 .ruff_cache
 .tbp-venv
+.test-results.xml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
