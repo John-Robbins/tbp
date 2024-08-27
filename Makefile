@@ -3,7 +3,7 @@
 .PHONY: tests
 tests:
 	coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
-	coverage report --precision=2 --show-missing --sort=Cover
+	coverage report --precision=2 --show-missing --sort=Cover --skip-covered
 	coverage lcov
 
 .PHONY: html

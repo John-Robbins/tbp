@@ -6,12 +6,8 @@
 # Copyright (c) 2004 John Robbins
 ###############################################################################
 
-# This is the absolutely dumbest reason I've ever written code. Ye ol' pytest
-# does not make it simple to get something as simple as the number of tests
-# run.
-#
 # Run pytest with the '--junit-xml=.test-results.xml' command line option to
-# create the XML file. Yes, I should be some cool XML crap here, but I just
+# create the XML file. Yes, I should be some cool XML stuff here, but I just
 # want a single number.
 #
 # To execute this script:
@@ -22,18 +18,20 @@ import re
 import sys
 from pathlib import Path
 
-if len(sys.argv) == 0:
+if len(sys.argv) == 1:
     print("Error: missing required pytest xml file.")
     sys.exit(1)
 
-PATTERN = r'tests="(\d+)"'
+PATTERN = r'tests="(?P<tests>\d+?)"'
 
-# Yeah, drag the whole thing into memory.
-raw_data = Path(sys.argv[1]).read_text(encoding="utf-8")
+# The information I want is in the first 202 bytes of the file so I'll read
+# just that much so I don't have to drag in a potentially large file.
+with Path(sys.argv[1]).open(encoding="utf-8") as f:
+    raw_data = f.read(202)
 
 if matches := re.search(PATTERN, raw_data):
-    print(matches.group(1))
+    print(matches.group("tests"))
     sys.exit(0)
 else:
-    print(f"No tests= found in {sys.argv[1]}")
+    print("0")
     sys.exit(2)
