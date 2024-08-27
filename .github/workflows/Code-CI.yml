@@ -27,4 +27,4 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Display OS version
       run: |
-        python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")
+        python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")'
