@@ -13,7 +13,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-python:
+  # I really want to break this up into multiple jobs, but I have no idea how.
+  setup-python_job:
+    name: setup-python
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -37,4 +39,16 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install .[dev]
         python -m pip install --editable .
+    - name: Check Types
+      run: mypy --config-file pyproject.toml src/ tests/
+    - name: Ruff Lint
+      run: ruff check --config ./pyproject.toml src/ tests/
+    - name: Pylint Lint
+      run: pylint --rcfile pyproject.toml src/ tests/
+    - name: Test and Coverage
+      run: |
+        coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+        coverage report --precision=2 --show-missing --sort=Cover --skip-covered
+        
+
       
