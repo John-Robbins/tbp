@@ -4,9 +4,8 @@ name: Code CI
 
 # Only trigger on the main branch
 on:
-  # DON"T FORGET TO UNCOMMENT THESE LINE WHEN DONE! 😹😹
-  # push:
-    # branches: ["main"]
+  push:
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab, which is 
   # kind of important for developing this action!
