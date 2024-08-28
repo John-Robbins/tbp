@@ -15,7 +15,7 @@ on:
 jobs:
   # I really want to break this up into multiple jobs, but I have no idea how.
   setup-python_job:
-    name: setup-python
+    name: lint-test-cov
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
