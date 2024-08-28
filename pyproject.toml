@@ -25,7 +25,8 @@ classifiers = [
 ]
 dependencies = [
     "sortedcontainers >=2.4",
-    "sortedcontainers-stubs>2.4"
+    "sortedcontainers-stubs>2.4",
+    "pyreadline3>=3.4"
 ]
 
 [project.optional-dependencies]
