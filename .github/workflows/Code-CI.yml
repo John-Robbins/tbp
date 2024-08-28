@@ -42,21 +42,30 @@ jobs:
 
 
   # I really want to break this up into multiple jobs, but I have no idea how.
-  setup-python_job:
-    name: lint-test-cov
-    runs-on: ${{ fromJson(matrix.os) }}
+  setup-python-job:
+    name: Setup-tbp
+    uses: John-Robbins/tbp/.github/workflows/Setup-tbp.yml@real-build
+    with:
+      executes_on: ${{ matrix.os }}
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
         python-version: ["3.12"]
+
+  show-version-job:
+    name: Show Version on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     steps:
-    - name: Setup
-      uses: John-Robbins/tbp/.github/workflows/Setup-tbp.yml@real-build
-      with:
-        executes_on: ${{ matrix.os }}
     - name: Display OS version
       run: |
-        python3 -c 'import platform; print(f"{platform.system()} - {platform.release()}")'
+        python -c 'import platform; print(f"{platform.system()} - {platform.release()}")'
 
     # - name: Install Dependencies
     #   # I'm not sure if I need the 'python -m pip install --editable .'
