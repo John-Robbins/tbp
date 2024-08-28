@@ -14,7 +14,7 @@ on:
           type: string
           required: false
           default: "3.12"
-        executes_on:
+        runs-on:
           description: The operating system. Default= "['ubuntu-latest']"
           type: string
           required: false
@@ -27,7 +27,7 @@ jobs:
       runs-on: ${{ matrix.os }}
       strategy:
         matrix:
-          os: ${{ fromJson(inputs.executes_on) }}
+          os: ${{ fromJson(inputs.runs-on) }}
       steps:
           - name: Checkout Code
             uses: actions/checkout@v4

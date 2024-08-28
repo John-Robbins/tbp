@@ -46,7 +46,7 @@ jobs:
     name: Setup-tbp
     uses: John-Robbins/tbp/.github/workflows/Setup-tbp.yml@real-build
     with:
-      executes_on: ${{ matrix.os }}
+      runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
@@ -54,6 +54,7 @@ jobs:
 
   show-version-job:
     name: Show Version on ${{matrix.os}}
+    needs: setup-python-job
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
