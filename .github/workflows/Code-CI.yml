@@ -138,7 +138,7 @@ jobs:
       with:
           # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
           auth: ${{ secrets.GIST_BADGES_SECRET }}
-          gistID: 5a304c1c779d4bcc57be95f847e9327f
+          gistID: bd5e145f62ac1cf199a458977b8e1f16
           filename: covbadge.json
           label: Coverage
           message: ${{ env.total_coverage }}%
