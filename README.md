@@ -32,22 +32,22 @@ As powerful as [The Bionic Woman](https://en.wikipedia.org/wiki/The_Bionic_Woman
 
 ## :sparkles: Features Galore
 
-- Supports all 12 statements and the two functions of the original, including `USR`.
+- Supports all [12 statements and the two functions](https://john-robbins.github.io/tbp/tb-language) of the original, including `USR`.
 - Supports all 26 variables, `A` - `Z`. Why would anyone need more than that?
-- Loading and saving programs to/from disk. Feel free to make a pull request for cassette tape support.
-- A linter to help with program correctness.
+- [Loading](https://john-robbins.github.io/tbp/tbp-command-language#loading-files-loadfile--lf) and [saving](https://john-robbins.github.io/tbp/tbp-command-language#saving-files-savefile--sf) programs to/from disk. Feel free to make a pull request for cassette tape support.
+- A [linter](https://john-robbins.github.io/tbp/tbp-command-language#linting-lint) to help with program correctness.
   - Potential uninitialized variable usage.
   - Invalid `GOTO` and `GOSUB` address (i.e., line numbers).
   - Missing `END` in the program.
   - Using `CLEAR` in a program.
-- A **full** debugger built in!
+- A **complete** [debugger](https://john-robbins.github.io/tbp/tbp-command-language#the-tiny-basic-in-python-debugger) built in!
   - Breakpoints.
   - Single stepping.
   - Call stack.
   - Variable display (all 26!)
-- Line timings.
+- [Line timings](https://john-robbins.github.io/tbp/tbp-command-language#options-opt).
 - Runs all Tiny BASIC programs from the 1970s! [^1]
-- More documentation than you ever wanted!
+- More [documentation](https://john-robbins.github.io/tbp/) than you ever wanted!
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
@@ -79,7 +79,7 @@ Everything about tbp is lovingly documented to death in the GitHub Pages for thi
 
 ### [Bob Nystrom](https://github.com/munificent)
 
-His glorious [Crafting Interpreters](http://www.craftinginterpreters.com) book sparked my huge interest in programming languages. He wrote a book that perfectly threaded the needle between practical and theory and gives you the learning hooks to successfully move on to books like the [Dragon Book](https://www.malaprops.com/book/9780321486813) and [Engineering a Compiler](https://www.malaprops.com/book/9780128154120). My rating: 5,000 :star:! You will see Bob's influence all over this project. All the ugly and mistakes are all on me, not Bob.
+His glorious [Crafting Interpreters](http://www.craftinginterpreters.com) book sparked my huge interest in programming languages. Bob wrote a book that perfectly threaded the needle between practical and theory and gives you the learning hooks to successfully move on to books like the [Dragon Book](https://www.malaprops.com/book/9780321486813) and [Engineering a Compiler](https://www.malaprops.com/book/9780128154120). My rating: 5,000 :star:! You will see Bob's influence all over this project. All the ugly and mistakes are all on me, not Bob.
 
 ### [Tom Pittman](http://www.ittybittycomputers.com)
 
@@ -87,11 +87,17 @@ He wrote a popular version of [Tiny BASIC](http://www.ittybittycomputers.com/Itt
 
 ### [Marco's Retrobits](https://retrobits.altervista.org/blog/)
 
-Marco's [TinyBasicBlazor](https://retrobits.altervista.org/tinybasicblazor/), a WebAssembly port of Tiny BASIC, was a huge help in helping me understand lots of edge cases in Tiny BASIC behavior. His [Day of the Week](https://retrobits.altervista.org/tinybasicblazor/programs/DayOfTheWeek.txt) program helped me uncover a major bug in my code, too.
+Marco's [TinyBasicBlazor](https://retrobits.altervista.org/tinybasicblazor/), a WebAssembly port of Tiny BASIC, was a huge help in helping me understand lots of edge cases in Tiny BASIC behavior. I hope I didn't eat too much bandwidth at your site Marco, because I felt I was there a lot! His [Day of the Week](https://retrobits.altervista.org/tinybasicblazor/programs/DayOfTheWeek.txt) program helped me uncover a major bug in my code, too.
+
+### [Ned Batchelder](https://nedbatchelder.com)
+
+[Coverage.py](https://coverage.readthedocs.io/en/latest/index.html) is one of those perfect software tools. As an absolute Python beginner, it took me less than five minutes to get it running and made me a better Python developer. Ned's been shepherding the development of Coverage.py for 20 years and the Python world is a better place because of his work. Also, when I was trying to learn [GitHub Actions](https://docs.github.com/en/actions), his [scriv](https://github.com/nedbat/scriv) project has great real world actions that are more than the documentation offers, but not too crazy.
 
 ### :heart: YOU! :heart:
 
-Thank you so much for looking at tbp. It's my first Python project so any feedback on what I can do better, or what I did wrong, is appreciated.
+Thank you so much for looking at tbp. It's my first Python project so any feedback on what I can do better, or what I did wrong, is appreciated. Hit me up in the [Issues](https://github.com/John-Robbins/tbp/issues).
+
+*To all of you, thanks! I'm an idiot standing on the shoulders of giants!*
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
