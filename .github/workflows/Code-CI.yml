@@ -88,7 +88,7 @@ jobs:
       run: |
         export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
         echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
-        echo "### Total Unit Tests: ${TOTAL_UNIT_TESTS}" >> $GITHUB_STEP_SUMMARY
+        echo "### Total Unit Tests: :trophy: ${TOTAL_UNIT_TESTS} :1st_place_medal:" >> $GITHUB_STEP_SUMMARY
     - name: "Upload Coverage Data"
         # Upload the coverage data for the coverage-job
       uses: actions/upload-artifact@v4
@@ -129,5 +129,5 @@ jobs:
         coverage json
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
-        echo "### Total coverage: ${TOTAL_COVERAGE}%" >> $GITHUB_STEP_SUMMARY
+        echo "### Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
 
