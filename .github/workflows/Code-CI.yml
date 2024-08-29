@@ -134,15 +134,15 @@ jobs:
         # && (github.ref == 'refs/heads/main') <- Add for main?
       if: (github.repository == 'John-Robbins/tbp')
         # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
-        uses: schneegans/dynamic-badges-action@v1.7.0
-        with:
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
           # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
           auth: ${{ secrets.GIST_BADGES_SECRET }}
           gistID: 5a304c1c779d4bcc57be95f847e9327f
           filename: covbadge.json
           label: Coverage
-          message: ${{ env.total }}%
+          message: ${{ env.total_coverage }}%
           minColorRange: 50
           maxColorRange: 90
-          valColorRange: ${{ env.total }}
+          valColorRange: ${{ env.total_coverage }}
 
