@@ -18,25 +18,25 @@ jobs:
   # The first job is to type check and  is to type check and lint the project.
   # I'll do that on Ubuntu and won't proceed if this fails.
   lint-types-job:
-    name: Type and Lint Checks
+    name: "Type and Lint Checks"
     runs-on: ubuntu-latest
     steps:
       # You have to love copying and pasting the same 11 lines into each job.
       # I tried to make these a reusable job, but GitHub Actions wants to
       # force you to ARY: Always Repeat Yourself. 😹😹
-      - name: Checkout Code
+      - name: "Checkout Code"
         uses: actions/checkout@v4
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: 'pip'
-      - name: Install Dependencies
+      - name: "Install Dependencies"
         run: |
           python -m pip install --upgrade pip
           python -m pip install .[dev]
       # The unique part starts here.
-      - name: Check Types
+      - name: "Check Types"
         run: mypy --config-file pyproject.toml src/ tests/
       - name: Ruff Lint
         run: ruff check --config ./pyproject.toml src/ tests/
@@ -45,7 +45,7 @@ jobs:
 
 
   test-cov-job:
-    name: Tests and Coverage
+    name: "Tests and Coverage"
     runs-on: ${{ matrix.os }}
     needs: lint-types-job
     strategy:
@@ -54,21 +54,35 @@ jobs:
         python-version: ["3.12"]
     steps:
     # Repeat ourselves again.
-    - name: Checkout Code
+    - name: "Checkout Code"
       uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: "Set up Python ${{ matrix.python-version }}"
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
-    - name: Install Dependencies
+    - name: "Install Dependencies"
       run: |
         python -m pip install --upgrade pip
         python -m pip install .[dev]
     # The unique part of this job.
-    - name: Test and Coverage
+    - name: "Test and Coverage"
+        # Generate the coverage data for this operating system.
       run: |
         coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
-        coverage report --precision=2 --show-missing --sort=Cover --skip-covered
+    - name: "Upload Coverage Data"
+        # Upload the coverage data for the coverage-job
+      uses: actions/upload-artifact@v4
+      with:
+        name: covdata-${{ matrix.os }}
+        path: .coverage.*
+    - name: "Count Unit Tests"
+        # Count the number of unit tests for the badge.
+      if: runner.os == 'Linux'
+      run: |
+        export TOTAL_UNIT_TESTS = $(python ./tools/num_pytest_tests.py .test-results.xml)
+        echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
+        echo "### Total Unit Tests: ${TOTAL_UNIT_TESTS}" >> $GITHUB_STEP_SUMMARY
+
 
 
