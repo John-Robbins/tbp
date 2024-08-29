@@ -13,18 +13,18 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 # I dislike having to do this pure ick here.
-if sys.platform.startswith("win32"):  # pragma no cover
+if sys.platform.startswith("win32"):
     # Windows doesn't have readline so as far as I can tell this is the
     # only way I can get something close.
     # https://stackoverflow.com/questions/51157443/pythons-readline-module-not-available-for-windows
     # https://github.com/pyreadline3/pyreadline3
-    from pyreadline3 import Readline  # type: ignore # pragma no cover  # noqa: PGH003
+    from pyreadline3 import Readline  # type: ignore   # noqa: PGH003
 
-    readline = Readline()  # pragma no cover
+    readline = Readline()
 else:
     # Including readline gives a *much* better editing experience.
     # https://docs.astral.sh/ruff/rules/unused-import/
-    import readline  # pylint: disable=unused-import  # noqa: F401 #pragma no cover
+    import readline  # pylint: disable=unused-import  # noqa: F401
 
 
 if TYPE_CHECKING:
