@@ -68,6 +68,12 @@ jobs:
     # The unique part of this job.
     - name: "Test and Coverage"
         # Generate the coverage data for this operating system.
+        # The default name for the file is ".coverage", which is the same for
+        # all operating systems and makes combining them later a little hard.
+        # This uses the COVERAGE_FILE environment variable to give each their
+        # own name.
+      env:
+        COVERAGE_FILE: ".coverage.${{ matrix.os }}"
       run: |
         coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
     - name: "Count Unit Tests"
