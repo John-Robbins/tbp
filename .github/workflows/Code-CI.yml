@@ -70,19 +70,23 @@ jobs:
         # Generate the coverage data for this operating system.
       run: |
         coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+    - name: "Count Unit Tests"
+        # Count the number of unit tests for the badge.
+        # Note, I had no idea bash could not handle spaces arounf the '=' in
+        # the export command.
+      if: runner.os == 'Linux'
+      run: |
+        export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
+        echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
+        echo "### Total Unit Tests: ${TOTAL_UNIT_TESTS}" >> $GITHUB_STEP_SUMMARY
+        ls .cov*
+        ls cov*
     - name: "Upload Coverage Data"
         # Upload the coverage data for the coverage-job
       uses: actions/upload-artifact@v4
       with:
         name: covdata-${{ matrix.os }}
         path: .coverage.*
-    - name: "Count Unit Tests"
-        # Count the number of unit tests for the badge.
-      if: runner.os == 'Linux'
-      run: |
-        export TOTAL_UNIT_TESTS = $(python ./tools/num_pytest_tests.py .test-results.xml)
-        echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
-        echo "### Total Unit Tests: ${TOTAL_UNIT_TESTS}" >> $GITHUB_STEP_SUMMARY
 
 
 
