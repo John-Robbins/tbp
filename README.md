@@ -89,13 +89,13 @@ Marco's [TinyBasicBlazor](https://retrobits.altervista.org/tinybasicblazor/), a 
 
 ### [Ned Batchelder](https://nedbatchelder.com)
 
-[Coverage.py](https://coverage.readthedocs.io/en/latest/index.html) is one of those perfect software tools. As an absolute Python beginner, it took me less than five minutes to get it running and made me a better Python developer. Ned's been shepherding the development of Coverage.py for 20 years and the Python world is a better place because of his work. Also, when I was trying to learn [GitHub Actions](https://docs.github.com/en/actions), his [scriv](https://github.com/nedbat/scriv) project has great real world actions that are more than the documentation offers, but not too crazy.
+[Coverage.py](https://coverage.readthedocs.io/en/latest/index.html) is one of those perfect software tools. As an absolute Python beginner, it took me less than five minutes to get it running and made me a better Python developer. Also, when I was trying to learn [GitHub Actions](https://docs.github.com/en/actions), his [scriv](https://github.com/nedbat/scriv) project is a great example. Not too complicated, but more complete than the documentation.
 
 ### :heart: YOU! :heart:
 
-Thank you so much for looking at tbp. It's my first Python project so any feedback on what I can do better, or what I did wrong, is appreciated. Hit me up in the [Issues](https://github.com/John-Robbins/tbp/issues).
+Thank you so much for looking at tbp. It's my first Python project and first time using GitHub Actions so any feedback on what I can do better, or what I did wrong, greatly is appreciated. Hit me up in the [Issues](https://github.com/John-Robbins/tbp/issues).
 
-*To all of you, thanks! I'm an idiot standing on the shoulders of giants!*
+*To all of you, thanks! I'm a Python beginner standing on the shoulders of giants!*
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
