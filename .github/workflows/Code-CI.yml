@@ -89,6 +89,22 @@ jobs:
         export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
         echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
         echo "## Total Unit Tests: :trophy: ${TOTAL_UNIT_TESTS} :1st_place_medal:" >> $GITHUB_STEP_SUMMARY
+    - name: "Make Coverage Badge"
+        # && (github.ref == 'refs/heads/main') <- Add for main?
+      if: runner.os == 'Linux' && (github.repository == 'John-Robbins/tbp')
+        # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+          # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
+          auth: ${{ secrets.GIST_BADGES_SECRET }}
+          gistID: bd5e145f62ac1cf199a458977b8e1f16
+          filename: unittestsbadge.json
+          label: Unit Tests
+          message: ${{ env.total_unit_tests }}
+          minColorRange: 200
+          maxColorRange: 290
+          valColorRange: ${{ env.total_unit_tests }}
+          style: "flat-square"
     - name: "Upload Coverage Data"
         # Upload the coverage data for the coverage-job
       uses: actions/upload-artifact@v4
@@ -130,7 +146,7 @@ jobs:
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
         echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
-    - name: "Make badge"
+    - name: "Make Coverage Badge"
         # && (github.ref == 'refs/heads/main') <- Add for main?
       if: (github.repository == 'John-Robbins/tbp')
         # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
@@ -145,4 +161,5 @@ jobs:
           minColorRange: 50
           maxColorRange: 90
           valColorRange: ${{ env.total_coverage }}
+          style: "flat-square"
 
