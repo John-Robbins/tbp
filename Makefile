@@ -27,6 +27,6 @@ lint:
 
 .PHONY: docs
 docs:
-	cd docs; jekyll build; jekyll serve --livereload; cd ..
+	cd docs; bundle exec jekyll build; bundle exec jekyll serve --livereload; cd ..
 
 all: mypy lint tests
