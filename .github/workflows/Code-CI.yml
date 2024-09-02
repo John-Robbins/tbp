@@ -10,8 +10,12 @@ name: Code CI
 on:
   push:
     branches: ["main"]
+    paths-ignore:
+      - 'docs/**'
   pull_request:
     branches: ["main"]
+    paths-ignore:
+      - 'docs/**'
   # Allows you to run this workflow manually from the Actions tab, which is
   # kind of important for developing this action as well as testing on any
   # branch.
@@ -79,10 +83,10 @@ jobs:
       env:
         COVERAGE_FILE: ".coverage.${{ matrix.os }}"
       run: |
-        coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+        coverage run --debug=config --data-file=.coverage.${{ matrix.os }} -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
     - name: "Count Unit Tests"
         # Count the number of unit tests for the badge.
-        # Note, I had no idea bash could not handle spaces arounf the '=' in
+        # Note, I had no idea bash could not handle spaces around the '=' in
         # the export command.
       if: runner.os == 'Linux'
       run: |
@@ -111,6 +115,7 @@ jobs:
       with:
         name: covdata-${{ matrix.os }}
         path: .coverage*
+        if-no-files-found: error
 
 
   cov-report-job:
@@ -137,10 +142,12 @@ jobs:
       with:
         pattern: covdata-*
         merge-multiple: true
+    - name: Display Downloaded Files
+      run: ls -l .coverage*
     - name: "Combine and Report"
         # Get the code coverage data.
       run: |
-        coverage combine
+        coverage combine --debug=config
         coverage report --precision=2 --show-missing --sort=Cover --skip-covered
         coverage json
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
