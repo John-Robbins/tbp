@@ -89,9 +89,9 @@ jobs:
         export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
         echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
         echo "## Total Unit Tests: :trophy: ${TOTAL_UNIT_TESTS} :1st_place_medal:" >> $GITHUB_STEP_SUMMARY
-    - name: "Make Coverage Badge"
-        # && (github.ref == 'refs/heads/main') <- Add for main?
-      if: runner.os == 'Linux' && (github.repository == 'John-Robbins/tbp')
+    - name: "Make Unit Tests Badge"
+        # The unit test badge is only updated on tbp and for the main branch.
+      if: runner.os == 'Linux' && (github.repository == 'John-Robbins/tbp') && (github.ref == 'refs/heads/main')
         # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
       uses: schneegans/dynamic-badges-action@v1.7.0
       with:
@@ -147,8 +147,8 @@ jobs:
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
         echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
     - name: "Make Coverage Badge"
-        # && (github.ref == 'refs/heads/main') <- Add for main?
-      if: (github.repository == 'John-Robbins/tbp')
+        # Code coverage is only updated on tbp and the main branch.
+      if: (github.repository == 'John-Robbins/tbp') && (github.ref == 'refs/heads/main')
         # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
       uses: schneegans/dynamic-badges-action@v1.7.0
       with:
