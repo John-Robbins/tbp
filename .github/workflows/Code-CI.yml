@@ -84,7 +84,7 @@ jobs:
       # names.
       run: |
         pwd
-        coverage run --debug=config --data-file=.coverage-${{ matrix.os }} -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+        coverage run --debug=config --data-file=./.coverage-${{ matrix.os }} -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
     - name: "Display Coverage File"
       run: |
         pwd
@@ -119,7 +119,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: covdata-${{ matrix.os }}
-        path: .coverage-${{ matrix.os }}
+        path: ./.coverage-${{ matrix.os }}
         if-no-files-found: error
 
 
