@@ -147,7 +147,7 @@ jobs:
     - name: "Combine and Report"
         # Get the code coverage data.
       run: |
-        coverage combine
+        coverage combine --debug=config --data-file=coverage.
         coverage report --precision=2 --show-missing --sort=Cover --skip-covered
         coverage json
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
