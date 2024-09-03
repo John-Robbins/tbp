@@ -57,6 +57,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: lint-types-job
     strategy:
+      max-parallel: 3
+      fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.12"]
@@ -82,6 +84,8 @@ jobs:
         # names.
       run: |
         coverage run --debug=config --data-file=.coverage-${{ matrix.os }} -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+    - name: "Display Coverage File"
+      run: ls -l .coverage-*
     - name: "Count Unit Tests"
         # Count the number of unit tests for the badge.
         # Note, I had no idea bash could not handle spaces around the '=' in
@@ -140,7 +144,7 @@ jobs:
       with:
         pattern: covdata-*
         merge-multiple: true
-    - name: Display Downloaded Files
+    - name: "Display Downloaded Files"
       run: ls -l .coverage-*
     - name: "Combine and Report"
         # Get the code coverage data.
