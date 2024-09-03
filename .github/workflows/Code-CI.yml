@@ -78,12 +78,10 @@ jobs:
         # Generate the coverage data for this operating system.
         # The default name for the file is ".coverage", which is the same for
         # all operating systems and makes combining them later a little hard.
-        # This uses the COVERAGE_FILE environment variable to give each their
-        # own name.
-      env:
-        COVERAGE_FILE: ".coverage.${{ matrix.os }}"
+        # Uses the cool expansion to give each OS in the matrix their own
+        # names.
       run: |
-        coverage run --debug=config --data-file=.coverage.${{ matrix.os }} -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+        coverage run --debug=config --data-file=.coverage-${{ matrix.os }} -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
     - name: "Count Unit Tests"
         # Count the number of unit tests for the badge.
         # Note, I had no idea bash could not handle spaces around the '=' in
@@ -114,7 +112,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: covdata-${{ matrix.os }}
-        path: .coverage*
+        path: .coverage-*
         if-no-files-found: error
 
 
@@ -143,7 +141,7 @@ jobs:
         pattern: covdata-*
         merge-multiple: true
     - name: Display Downloaded Files
-      run: ls -l .coverage*
+      run: ls -l .coverage-*
     - name: "Combine and Report"
         # Get the code coverage data.
       run: |
