@@ -5,6 +5,7 @@ on:
   push:
     branches:
     - "main"
+    # TODO: Remove this branch when finally finished wrestling with this.
     - "branch-protections"
   pull_request:
     branches: ["main"]
@@ -58,8 +59,8 @@ jobs:
           docs:
             - added|modified|deleted: 'docs/**'
           code:
-            - added|modified: '**'
-                              '!docs/**'
+            - added|modified:'**'
+            - '!docs/**'
 
 
   lint-types-job:
