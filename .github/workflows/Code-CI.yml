@@ -26,7 +26,7 @@ jobs:
   # The first job is to type check and  is to type check and lint the project.
   # I'll do that on Ubuntu and won't proceed if this fails.
   lint-types-job:
-    name: "Type and Lint Checks"
+    name: "Type & Lint Checks"
     runs-on: ubuntu-latest
     steps:
     # You have to love copying and pasting the same 11 lines into each job.
@@ -53,7 +53,7 @@ jobs:
 
 
   test-cov-job:
-    name: "Tests and Coverage"
+    name: "Tests & Coverage"
     runs-on: ${{ matrix.os }}
     needs: lint-types-job
     strategy:
@@ -121,7 +121,7 @@ jobs:
 
 
   cov-report-job:
-    name: "Coverage Reports"
+    name: "Coverage Report"
     runs-on: ubuntu-latest
     needs: test-cov-job
     steps:
@@ -149,7 +149,7 @@ jobs:
       run: |
         coverage combine
         coverage report --precision=2 --show-missing --sort=Cover --skip-covered
-        coverage json
+        coverage json --fail-under=98
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
         echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
