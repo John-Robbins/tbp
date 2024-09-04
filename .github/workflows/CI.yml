@@ -72,13 +72,12 @@ jobs:
     steps:
     - name: "Changed Code Files"
       run: |
-        echo ${{needs.fight-github-job.outputs.filter.code_files}}
-        echo Try 2
-        echo ${{needs.fight-github-job.filter.outputs.code_files}}
-        echo Try 3
-        echo ${{needs.fight-github-job.filter.code_files}}
-        echo Try 4
+        echo Try 1
         echo ${{needs.fight-github-job.outputs.code_files}}
+        echo Try 2
+        echo ${{needs.fight-github-job.outputs.code}}
+        echo Try 3
+        echo ${{needs.fight-github-job.outputs.code}}_files
 
   build-docs-job:
     needs: fight-github-job
