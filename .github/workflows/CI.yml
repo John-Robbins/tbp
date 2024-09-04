@@ -71,7 +71,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Changed Code Files"
-      run: echo ${{needs.fight-github-job.outputs.filter.code_files}}
+      run: |
+      echo ${{needs.fight-github-job.outputs.filter.code_files}}
+      echo ${{needs.fight-github-job.filter.outputs.code_files}}
+      echo ${{needs.fight-github-job.filter.code_files}}
+      echo ${{needs.fight-github-job.outputs.code_files}}
 
   build-docs-job:
     needs: fight-github-job
