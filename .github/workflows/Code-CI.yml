@@ -1,172 +1,172 @@
-# My attempt at creating the tbp CI action.
-# Use this tool to lint files: https://rhysd.github.io/actionlint/
-# A huge shout out of appreciation to Ned Batchelder! I learned and leaned
-# heavily on GitHub Action code from his excellent scriv project.
-# https://github.com/nedbat/scriv
-# I'm an idiot standing on the shoulder of a giant. Thanks, Ned!
-name: Code CI
+# # My attempt at creating the tbp CI action.
+# # Use this tool to lint files: https://rhysd.github.io/actionlint/
+# # A huge shout out of appreciation to Ned Batchelder! I learned and leaned
+# # heavily on GitHub Action code from his excellent scriv project.
+# # https://github.com/nedbat/scriv
+# # I'm an idiot standing on the shoulder of a giant. Thanks, Ned!
+# name: Code CI
 
-# Only trigger on the main branch
-on:
-  push:
-    branches: ["main"]
-    paths-ignore:
-    - docs/**
-  pull_request:
-    branches: ["main"]
-    paths-ignore:
-    - docs/**
-  # Allows you to run this workflow manually from the Actions tab, which is
-  # kind of important for developing this action as well as testing on any
-  # branch.
-  workflow_dispatch:
+# # Only trigger on the main branch
+# on:
+#   push:
+#     branches: ["main"]
+#     paths-ignore:
+#     - docs/**
+#   pull_request:
+#     branches: ["main"]
+#     paths-ignore:
+#     - docs/**
+#   # Allows you to run this workflow manually from the Actions tab, which is
+#   # kind of important for developing this action as well as testing on any
+#   # branch.
+#   workflow_dispatch:
 
-jobs:
+# jobs:
 
-  # The first job is to type check and  is to type check and lint the project.
-  # I'll do that on Ubuntu and won't proceed if this fails.
-  lint-types-job:
-    name: "Type & Lint Checks"
-    runs-on: ubuntu-latest
-    steps:
-    # You have to love copying and pasting the same 11 lines into each job.
-    # I tried to make these a reusable job, but GitHub Actions wants to
-    # force you to ARY: Always Repeat Yourself. 😹😹
-    - name: "Checkout Code"
-      uses: actions/checkout@v4
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
-        cache: 'pip'
-    - name: "Install Dependencies"
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install .[dev]
-    # The unique part starts here.
-    - name: "Check Types"
-      run: mypy --config-file pyproject.toml src/ tests/
-    - name: Ruff Lint
-      run: ruff check --config ./pyproject.toml src/ tests/
-    - name: Pylint Lint
-      run: pylint --rcfile pyproject.toml src/ tests/
-
-
-  test-cov-job:
-    name: "Tests & Coverage"
-    runs-on: ${{ matrix.os }}
-    needs: lint-types-job
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.12"]
-    steps:
-    # Repeat ourselves again.
-    - name: "Checkout Code"
-      uses: actions/checkout@v4
-    - name: "Set up Python ${{ matrix.python-version }}"
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'pip'
-    - name: "Install Dependencies"
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install .[dev]
-    # The unique part of this job.
-    - name: "Test and Coverage"
-      # Generate the coverage data for this operating system.
-      # The default name for the file is ".coverage", which is the same for
-      # all operating systems and makes combining them later a little hard.
-      # This uses the COVERAGE_FILE environment variable to give each their
-      # own name.
-      env:
-        COVERAGE_FILE: ".coverage.${{ matrix.os }}"
-      run: |
-        coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
-    - name: "Count Unit Tests"
-      # Count the number of unit tests for the badge.
-      # Note, I had no idea bash could not handle spaces around the '=' in
-      # the export command.
-      if: runner.os == 'Linux'
-      run: |
-        export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
-        echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
-        echo "## Total Unit Tests: :trophy: ${TOTAL_UNIT_TESTS} :1st_place_medal:" >> $GITHUB_STEP_SUMMARY
-    - name: "Make Unit Tests Badge"
-      # The unit test badge is only updated on tbp and for the main branch.
-      if: runner.os == 'Linux' && (github.repository == 'John-Robbins/tbp') && (github.ref == 'refs/heads/main')
-      # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
-      uses: schneegans/dynamic-badges-action@v1.7.0
-      with:
-        # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
-        auth: ${{ secrets.GIST_BADGES_SECRET }}
-        gistID: bd5e145f62ac1cf199a458977b8e1f16
-        filename: unittestsbadge.json
-        label: Unit Tests
-        message: ${{ env.total_unit_tests }}
-        minColorRange: 200
-        maxColorRange: 290
-        valColorRange: ${{ env.total_unit_tests }}
-        style: "flat-square"
-    - name: "Upload Coverage Data"
-      # Upload the coverage data for the coverage-job
-      uses: actions/upload-artifact@v4
-      with:
-        name: covdata-${{ matrix.os }}
-        path: .coverage*
-        # Loved the breaking change on 2024/09/02 without a major update.
-        # https://github.com/actions/upload-artifact/issues/602
-        include-hidden-files: true
+#   # The first job is to type check and  is to type check and lint the project.
+#   # I'll do that on Ubuntu and won't proceed if this fails.
+#   lint-types-job:
+#     name: "Type & Lint Checks"
+#     runs-on: ubuntu-latest
+#     steps:
+#     # You have to love copying and pasting the same 11 lines into each job.
+#     # I tried to make these a reusable job, but GitHub Actions wants to
+#     # force you to ARY: Always Repeat Yourself. 😹😹
+#     - name: "Checkout Code"
+#       uses: actions/checkout@v4
+#     - name: Set up Python 3.12
+#       uses: actions/setup-python@v5
+#       with:
+#         python-version: "3.12"
+#         cache: 'pip'
+#     - name: "Install Dependencies"
+#       run: |
+#         python -m pip install --upgrade pip
+#         python -m pip install .[dev]
+#     # The unique part starts here.
+#     - name: "Check Types"
+#       run: mypy --config-file pyproject.toml src/ tests/
+#     - name: Ruff Lint
+#       run: ruff check --config ./pyproject.toml src/ tests/
+#     - name: Pylint Lint
+#       run: pylint --rcfile pyproject.toml src/ tests/
 
 
-  cov-report-job:
-    name: "Coverage Report"
-    runs-on: ubuntu-latest
-    needs: test-cov-job
-    steps:
-    # Repeat ourselves again.
-    - name: "Checkout Code"
-      uses: actions/checkout@v4
-    - name: "Set up Python 3.12"
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
-        cache: 'pip'
-    - name: "Install Dependencies"
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install .[dev]
-    # The unique part of this job.
-    - name: "Download Coverage Data"
-      # Gather all those operating system coverage files.
-      uses: actions/download-artifact@v4
-      with:
-        pattern: covdata-*
-        merge-multiple: true
-    - name: "Combine and Report"
-      # Get the code coverage data.
-      run: |
-        coverage combine
-        coverage report --precision=2 --show-missing --sort=Cover --skip-covered
-        coverage json --fail-under=98
-        export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
-        echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
-        echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
-    - name: "Make Coverage Badge"
-      # Code coverage is only updated on tbp and the main branch.
-      if: (github.repository == 'John-Robbins/tbp') && (github.ref == 'refs/heads/main')
-      # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
-      uses: schneegans/dynamic-badges-action@v1.7.0
-      with:
-        # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
-        auth: ${{ secrets.GIST_BADGES_SECRET }}
-        gistID: bd5e145f62ac1cf199a458977b8e1f16
-        filename: covbadge.json
-        label: Coverage
-        message: ${{ env.total_coverage }}%
-        minColorRange: 50
-        maxColorRange: 90
-        valColorRange: ${{ env.total_coverage }}
-        style: "flat-square"
+#   test-cov-job:
+#     name: "Tests & Coverage"
+#     runs-on: ${{ matrix.os }}
+#     needs: lint-types-job
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest, macos-latest, windows-latest]
+#         python-version: ["3.12"]
+#     steps:
+#     # Repeat ourselves again.
+#     - name: "Checkout Code"
+#       uses: actions/checkout@v4
+#     - name: "Set up Python ${{ matrix.python-version }}"
+#       uses: actions/setup-python@v5
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#         cache: 'pip'
+#     - name: "Install Dependencies"
+#       run: |
+#         python -m pip install --upgrade pip
+#         python -m pip install .[dev]
+#     # The unique part of this job.
+#     - name: "Test and Coverage"
+#       # Generate the coverage data for this operating system.
+#       # The default name for the file is ".coverage", which is the same for
+#       # all operating systems and makes combining them later a little hard.
+#       # This uses the COVERAGE_FILE environment variable to give each their
+#       # own name.
+#       env:
+#         COVERAGE_FILE: ".coverage.${{ matrix.os }}"
+#       run: |
+#         coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+#     - name: "Count Unit Tests"
+#       # Count the number of unit tests for the badge.
+#       # Note, I had no idea bash could not handle spaces around the '=' in
+#       # the export command.
+#       if: runner.os == 'Linux'
+#       run: |
+#         export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
+#         echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
+#         echo "## Total Unit Tests: :trophy: ${TOTAL_UNIT_TESTS} :1st_place_medal:" >> $GITHUB_STEP_SUMMARY
+#     - name: "Make Unit Tests Badge"
+#       # The unit test badge is only updated on tbp and for the main branch.
+#       if: runner.os == 'Linux' && (github.repository == 'John-Robbins/tbp') && (github.ref == 'refs/heads/main')
+#       # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
+#       uses: schneegans/dynamic-badges-action@v1.7.0
+#       with:
+#         # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
+#         auth: ${{ secrets.GIST_BADGES_SECRET }}
+#         gistID: bd5e145f62ac1cf199a458977b8e1f16
+#         filename: unittestsbadge.json
+#         label: Unit Tests
+#         message: ${{ env.total_unit_tests }}
+#         minColorRange: 200
+#         maxColorRange: 290
+#         valColorRange: ${{ env.total_unit_tests }}
+#         style: "flat-square"
+#     - name: "Upload Coverage Data"
+#       # Upload the coverage data for the coverage-job
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: covdata-${{ matrix.os }}
+#         path: .coverage*
+#         # Loved the breaking change on 2024/09/02 without a major update.
+#         # https://github.com/actions/upload-artifact/issues/602
+#         include-hidden-files: true
+
+
+#   cov-report-job:
+#     name: "Coverage Report"
+#     runs-on: ubuntu-latest
+#     needs: test-cov-job
+#     steps:
+#     # Repeat ourselves again.
+#     - name: "Checkout Code"
+#       uses: actions/checkout@v4
+#     - name: "Set up Python 3.12"
+#       uses: actions/setup-python@v5
+#       with:
+#         python-version: "3.12"
+#         cache: 'pip'
+#     - name: "Install Dependencies"
+#       run: |
+#         python -m pip install --upgrade pip
+#         python -m pip install .[dev]
+#     # The unique part of this job.
+#     - name: "Download Coverage Data"
+#       # Gather all those operating system coverage files.
+#       uses: actions/download-artifact@v4
+#       with:
+#         pattern: covdata-*
+#         merge-multiple: true
+#     - name: "Combine and Report"
+#       # Get the code coverage data.
+#       run: |
+#         coverage combine
+#         coverage report --precision=2 --show-missing --sort=Cover --skip-covered
+#         coverage json --fail-under=98
+#         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
+#         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
+#         echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
+#     - name: "Make Coverage Badge"
+#       # Code coverage is only updated on tbp and the main branch.
+#       if: (github.repository == 'John-Robbins/tbp') && (github.ref == 'refs/heads/main')
+#       # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
+#       uses: schneegans/dynamic-badges-action@v1.7.0
+#       with:
+#         # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
+#         auth: ${{ secrets.GIST_BADGES_SECRET }}
+#         gistID: bd5e145f62ac1cf199a458977b8e1f16
+#         filename: covbadge.json
+#         label: Coverage
+#         message: ${{ env.total_coverage }}%
+#         minColorRange: 50
+#         maxColorRange: 90
+#         valColorRange: ${{ env.total_coverage }}
+#         style: "flat-square"
 

@@ -1,0 +1,86 @@
+# GitHub Actions vs. Branch Protections. Ugh.
+
+on:
+  # Runs on both pushes and PRs to main.
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  # Allows you to run this workflow manually from the Actions tab, which is
+  # kind of important for developing this action as well as testing on any
+  # branch.
+  workflow_dispatch:
+
+  # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "CI"
+  cancel-in-progress: true
+
+# The work done in this action.
+jobs:
+
+  fight-github-job:
+    name: "Detect File Changes"
+    runs-on: ubuntu-latest
+    # The permissions necessary for dorny/paths-filter@v3 on pull requests.
+    permissions:
+      pull-requests: read
+    # The outputs for this job.
+    outputs:
+      # true if code files have changed.
+      code: ${{steps.filter.outputs.code}}
+      docs: ${{steps.filter.outputs.docs}}
+    steps:
+    # Check out the code as that's needed for a push trigger.
+    - name: "Checkout Code"
+      uses: actions/checkout@v4
+    # Now do the filtering so we can appropriately decide which jobs need to
+    # be run.
+    - name: "Filter Files"
+      uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        # For debugging, I'm setting the outputs to build a list of files so
+        # I can print them out in the jobs below.
+        list-files: 'shell'
+        # For docs, I only care about all changes in the docs directory.
+        # For code, I care about added and modified files everywhere but
+        # nothing in the docs directory.
+        filters: |
+          docs:
+            - added|modified|deleted: 'docs/**'
+          code:
+            - added|modified: '**'
+                              '!docs/**'
+
+
+  lint-types-job:
+    needs: fight-github-job
+    name: "Type & Lint Checks"
+    # Are there any code files that have changed?
+    if: ${{needs.fight-github-job.outputs.code == 'true'}}
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Changed Code Files"
+      run: echo ${{needs.fight-github-job.outputs.code_files}}
+
+
+  build-docs-job:
+    needs: fight-github-job
+    name: "Build Documents"
+    # Are there any document files that have changed?
+    if: ${{needs.fight-github-job.outputs.docs == 'true'}}
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Changed Code Files"
+      run: echo ${{needs.fight-github-job.outputs.docs_files}}
+
+
+
+
