@@ -1,5 +1,45 @@
+###############################################################################
 # GitHub Actions vs. Branch Protections. Ugh.
+#
+# Being a complete novice to GitHub Actions, the documentation at GitHub
+# heavily implies that the best way to limit push and pull_request events is to
+# use paths and paths-ignore:
+# https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#onpushpull_requestpull_request_targetpathspaths-ignore
+# Also, many of the real world examples I looked at use this approach.
+#
+# I had set up my two workflows, Code-CI.yml and Docs-CI.yml to ignore each
+# other's directories and life was good as everything linted, build, tested,
+# and deployed perfectly. The 99.82% code coverage was glorious, too!
+#
+# Then I decided to look at the cool Branch Protections..... RECORD SCRAAAATCH!
+# It appears that the Actions team and the Branch Protections team have never
+# spoken to one another, even at a party. 😹😹 If I set Branch Protections to
+# require "Type & Lint Checks" and all of the "Tests & Coverage" matrix,
+# any documentation PRs would never pass as doc jobs never would run those
+# code jobs.
+#
+# Folks have been begging for a fix to this mess for over 5 years:
+# https://github.com/orgs/community/discussions/26251
+# https://github.com/orgs/community/discussions/13690
+#
+# The The Handling skipped but required checks documentation says to use a
+# merge_group but merge queues require an organization so are not available to
+# little old me.
+#
+# https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+# https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#merge_group
+# https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request-with-a-merge-queue
+#
+# Fortunately, there's the community dorny/paths-filter@v3 action.
+# https://github.com/dorny/paths-filter
+#
+# This is my attempt to let me have the best of both worlds. I hope it works
+# when I set the Branch Protection to require every job to pass, except the
+# fight-github-job 🤣🤪. The docs say that if a job is skipped, its counted
+# as passed.
+###############################################################################
 
+# Many thanks to https://rhysd.github.io/actionlint/ for saving my bacon!
 on:
   # Runs on both pushes and PRs to main.
   push:
@@ -27,6 +67,10 @@ concurrency:
 
 # The work done in this action.
 jobs:
+
+  #############################################################################
+  # The most important job in this file.
+  #############################################################################
 
   fight-github-job:
     name: "Detect File Changes"
@@ -68,18 +112,173 @@ jobs:
           code:
             - added|modified:'**'
             - '!docs/**'
+    - name: "Changed Code Files"
+      run: |
+        echo Code files: ${{steps.filter.outputs.code_files}}
+    - name: "Changed Docs Files"
+      run: |
+        echo Code files: ${{steps.filter.outputs.docs_files}}
 
+
+  #############################################################################
+  # Code Jobs
+  #############################################################################
 
   lint-types-job:
     needs: fight-github-job
     name: "Type & Lint Checks"
-    # Are there any code files that have changed?
+    # Only run if we have changed code files.
     if: ${{needs.fight-github-job.outputs.code == 'true'}}
     runs-on: ubuntu-latest
     steps:
-    - name: "Changed Code Files"
+    # You have to love copying and pasting the same 11 lines into each job.
+    # I tried to make these a reusable job, but GitHub Actions wants to
+    # force you to ARY: Always Repeat Yourself. 😹😹
+    - name: "Checkout Code"
+      uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: 'pip'
+    - name: "Install Dependencies"
       run: |
-        echo ${{needs.fight-github-job.outputs.code-files}}
+        python -m pip install --upgrade pip
+        python -m pip install .[dev]
+    # The unique part starts here.
+    - name: "Check Types"
+      run: mypy --config-file pyproject.toml src/ tests/
+    - name: Ruff Lint
+      run: ruff check --config ./pyproject.toml src/ tests/
+    - name: Pylint Lint
+      run: pylint --rcfile pyproject.toml src/ tests/
+
+  test-cov-job:
+    needs: [fight-github-job, lint-types-job]
+    name: "Tests & Coverage"
+    # Only run on changed code files.
+    if: ${{needs.fight-github-job.outputs.code == 'true'}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.12"]
+    steps:
+    # Repeat ourselves again.
+    - name: "Checkout Code"
+      uses: actions/checkout@v4
+    - name: "Set up Python ${{ matrix.python-version }}"
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    - name: "Install Dependencies"
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install .[dev]
+    # The unique part of this job.
+    - name: "Test and Coverage"
+      # Generate the coverage data for this operating system.
+      # The default name for the file is ".coverage", which is the same for
+      # all operating systems and makes combining them later a little hard.
+      # This uses the COVERAGE_FILE environment variable to give each their
+      # own name.
+      env:
+        COVERAGE_FILE: ".coverage.${{ matrix.os }}"
+      run: |
+        coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+    - name: "Count Unit Tests"
+      # Count the number of unit tests for the badge.
+      if: runner.os == 'Linux'
+      run: |
+        export TOTAL_UNIT_TESTS=$(python ./tools/num_pytest_tests.py .test-results.xml)
+        echo "total_unit_tests=$TOTAL_UNIT_TESTS" >> $GITHUB_ENV
+        echo "## Total Unit Tests: :trophy: ${TOTAL_UNIT_TESTS} :1st_place_medal:" >> $GITHUB_STEP_SUMMARY
+    - name: "Make Unit Tests Badge"
+      # The unit test badge is only updated on tbp and for the main branch.
+      if: runner.os == 'Linux' && (github.ref == 'refs/heads/main')
+      # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+        # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
+        auth: ${{ secrets.GIST_BADGES_SECRET }}
+        gistID: bd5e145f62ac1cf199a458977b8e1f16
+        filename: unittestsbadge.json
+        label: Unit Tests
+        message: ${{ env.total_unit_tests }}
+        minColorRange: 200
+        maxColorRange: 290
+        valColorRange: ${{ env.total_unit_tests }}
+        style: "flat-square"
+    - name: "Upload Coverage Data"
+      # Upload the coverage data for the coverage-job
+      uses: actions/upload-artifact@v4
+      with:
+        name: covdata-${{ matrix.os }}
+        path: .coverage*
+        # Loved the breaking change on 2024/09/02 without a major update.
+        # https://github.com/actions/upload-artifact/issues/602
+        # SemVer be damned!
+        include-hidden-files: true
+
+  cov-report-job:
+    needs: [fight-github-job, test-cov-job]
+    name: "Coverage Report"
+    # Only run on changed code files.
+    if: ${{needs.fight-github-job.outputs.code == 'true'}}
+    runs-on: ubuntu-latest
+    steps:
+    # Repeat ourselves again.
+    - name: "Checkout Code"
+      uses: actions/checkout@v4
+    - name: "Set up Python 3.12"
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: 'pip'
+    - name: "Install Dependencies"
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install .[dev]
+    # The unique part of this job.
+    - name: "Download Coverage Data"
+      # Gather all those operating system coverage files.
+      uses: actions/download-artifact@v4
+      with:
+        pattern: covdata-*
+        merge-multiple: true
+    - name: "Combine and Report"
+      # Get the code coverage data.
+      run: |
+        coverage combine
+        coverage report --precision=2 --show-missing --sort=Cover --skip-covered
+        coverage json --fail-under=98
+        export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
+        echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
+        echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
+    - name: "Make Coverage Badge"
+      # Code coverage is only updated on main branch.
+      if: (github.ref == 'refs/heads/main')
+      # https://gist.github.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+        # GIST_BADGES_SECRET is a GitHub personal access token with scope "gist".
+        auth: ${{ secrets.GIST_BADGES_SECRET }}
+        gistID: bd5e145f62ac1cf199a458977b8e1f16
+        filename: covbadge.json
+        label: Coverage
+        message: ${{ env.total_coverage }}%
+        minColorRange: 50
+        maxColorRange: 90
+        valColorRange: ${{ env.total_coverage }}
+        style: "flat-square"
+
+  #############################################################################
+  # Documentation Jobs
+  #############################################################################
+
+  # Based off the excellent work at https://github.com/just-the-docs/just-the-docs-template.
+  # Thanks to all!
 
   build-docs-job:
     needs: fight-github-job
@@ -87,10 +286,48 @@ jobs:
     # Are there any document files that have changed?
     if: ${{needs.fight-github-job.outputs.docs == 'true'}}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
     steps:
-    - name: "Changed Code Files"
-      run: echo ${{needs.fight-github-job.outputs.docs-files}}
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        # Not needed with a .ruby-version file
+        ruby-version: '3.3'
+        # runs 'bundle install' and caches installed gems automatically
+        bundler-cache: true
+        # Increment this number if you need to re-download cached gems
+        cache-version: 0
+        working-directory: '${{ github.workspace }}/docs'
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v5
+    - name: Build with Jekyll
+      # Outputs to the './_site' directory by default
+      run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+      env:
+        JEKYLL_ENV: production
+    - name: Upload artifact
+      # Automatically uploads an artifact from the '.docs/_site' directory by
+      # default. Making sure include-hidden-files is true as, well, see above.
+      uses: actions/upload-pages-artifact@v4
+      with:
+        path: "docs/_site"
+        include-hidden-files: true
 
-
-
+  deploy-docs-job:
+    needs: [fight-github-job, build-docs-job]
+    # If there are changed documents and this is the main branch, we'll deploy.
+    if: (needs.fight-github-job.outputs.docs == 'true') && (github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
 
