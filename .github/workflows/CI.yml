@@ -3,7 +3,9 @@
 on:
   # Runs on both pushes and PRs to main.
   push:
-    branches: ["main"]
+    branches:
+    - "main"
+    - "branch-protections"
   pull_request:
     branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab, which is
