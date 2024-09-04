@@ -36,9 +36,14 @@ jobs:
       pull-requests: read
     # The outputs for this job.
     outputs:
-      # true if code files have changed.
+      # The first two outputs are what are used in subsequent jobs to determine
+      # if we are looking at code or docs changes.
       code: ${{steps.filter.outputs.code}}
       docs: ${{steps.filter.outputs.docs}}
+      # These two here are for debugging purposes. After much trial and error,
+      # the ${FILTER_NAME}_files discussed in the dorny/paths-filter
+      # documentation only works on steps. By doing this one can get the files
+      # out of the job.
       code-files: ${{steps.filter.outputs.code_files}}
       docs-files: ${{steps.filter.outputs.docs_files}}
     steps:
@@ -74,9 +79,6 @@ jobs:
     steps:
     - name: "Changed Code Files"
       run: |
-        echo Try 1
-        echo ${{needs.fight-github-job.outputs.code_files}}
-        echo Try 2
         echo ${{needs.fight-github-job.outputs.code-files}}
 
   build-docs-job:
@@ -87,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Changed Code Files"
-      run: echo ${{needs.fight-github-job.outputs.filter.docs_files}}
+      run: echo ${{needs.fight-github-job.outputs.docs-files}}
 
 
 

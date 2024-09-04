@@ -11,30 +11,28 @@ aux_links:
 
 ###############################################################################
 exclude:
- # from https://github.com/jekyll/jekyll/blob/master/lib/site_template/_config.yml:
-   - .sass-cache/
-   - .jekyll-cache/
-   - gemfiles/
-   - Gemfile
-   - Gemfile.lock
-   - node_modules/
-   - vendor/bundle/
-   - vendor/cache/
-   - vendor/gems/
-   - vendor/ruby/
-   - LICENSE.txt
+# from https://github.com/jekyll/jekyll/blob/master/lib/site_template/_config.yml:
+- .sass-cache/
+- .jekyll-cache/
+- gemfiles/
+- Gemfile
+- Gemfile.lock
+- node_modules/
+- vendor/bundle/
+- vendor/cache/
+- vendor/gems/
+- vendor/ruby/
+- LICENSE.txt
 
 ###############################################################################
-# Enable safe mode
-#safe: true
 
 plugins:
-  - jemoji
-  - jekyll-relative-links
+- jemoji
+- jekyll-relative-links
 
 whitelist:
-  - jemoji
-  - jekyll-relative-links
+- jemoji
+- jekyll-relative-links
 
 ###############################################################################
 
@@ -54,8 +52,8 @@ enable_copy_code_button: true
 
 # These seem like good ideas.
 liquid:
-   error_mode: strict
-   strict_filters: true
+  error_mode: strict
+  strict_filters: true
 
 
 ###############################################################################
