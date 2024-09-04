@@ -39,7 +39,8 @@ jobs:
       # true if code files have changed.
       code: ${{steps.filter.outputs.code}}
       docs: ${{steps.filter.outputs.docs}}
-      debug: ${{steps.filter.outputs}}
+      code-files: ${{steps.filter.outputs.code_files}}
+      docs-files: ${{steps.filter.outputs.docs_files}}
     steps:
     # Check out the code as that's needed for a push trigger.
     - name: "Checkout Code"
@@ -76,11 +77,7 @@ jobs:
         echo Try 1
         echo ${{needs.fight-github-job.outputs.code_files}}
         echo Try 2
-        echo ${{needs.fight-github-job.outputs.code.files}}
-        echo Try 3
-        echo ${{needs.fight-github-job.debug.code}}
-        echo Try 4
-        echo ${{needs.fight-github-job.debug.code_files}}
+        echo ${{needs.fight-github-job.outputs.code-files}}
 
   build-docs-job:
     needs: fight-github-job
