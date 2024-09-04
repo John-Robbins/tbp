@@ -73,7 +73,6 @@ jobs:
     - name: "Changed Code Files"
       run: echo ${{needs.fight-github-job.outputs.code_files}}
 
-
   build-docs-job:
     needs: fight-github-job
     name: "Build Documents"
