@@ -3,12 +3,24 @@
 
 version: 2
 updates:
-- package-ecosystem: pip
-  directory: "./"
+- package-ecosystem: "github-actions"
+  directory: "/"
   schedule:
-    interval: daily
-    time: "13:00"
+    interval: "weekly"
+  groups:
+    action-dependencies:
+      patterns:
+      - "*"
+  commit-message:
+    prefix: "Dependa"
+
+- package-ecosystem: "pip"
+  directory: "/"
+  schedule:
+    interval: "weekly"
   groups:
     python-packages:
       patterns:
       - "*"
+  commit-message:
+    prefix: "Dependa"
