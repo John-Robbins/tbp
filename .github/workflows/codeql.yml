@@ -1,0 +1,36 @@
+# As tbpp is not doing anything interesting, I just want CodeQL to scan once a week just to be sure.
+name: "CodeQL Advanced"
+
+on:
+  schedule:
+    - cron: '0 04 * * 0'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
+      # required to fetch internal or private CodeQL packs
+      packages: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: python
+          build-mode: none
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
