@@ -110,8 +110,9 @@ jobs:
           docs:
             - added|modified|deleted: 'docs/**'
           code:
-            - added|modified:'**'
-            - '!docs/**'
+            - modified:'pyproject.toml'
+            - added|modified|deleted: 'src/**'
+            - added|modified|deleted: 'tests/**'
     - name: "Changed Code Files"
       run: |
         echo Code files: ${{steps.filter.outputs.code_files}}
@@ -177,7 +178,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install .[dev]
     # The unique part of this job.
-    - name: "Test and Coverage"
+    - name: "Run Tests and Coverage"
       # Generate the coverage data for this operating system.
       # The default name for the file is ".coverage", which is the same for
       # all operating systems and makes combining them later a little hard.
