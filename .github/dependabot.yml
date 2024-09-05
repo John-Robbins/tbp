@@ -7,12 +7,12 @@ updates:
   directory: "/"
   schedule:
     interval: "weekly"
-    groups:
+  groups:
     action-dependencies:
       patterns:
       - "*"
-    commit-message:
-      prefix: "Dependa"
+  commit-message:
+    prefix: "Dependa"
 
 - package-ecosystem: "pip"
   directory: "/"
@@ -22,5 +22,5 @@ updates:
     python-packages:
       patterns:
       - "*"
-    commit-message:
-      prefix: "Dependa"
+  commit-message:
+    prefix: "Dependa"
