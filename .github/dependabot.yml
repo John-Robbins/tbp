@@ -1,0 +1,14 @@
+# Found Simon's blog about Dependabot for a Python project so started with that.
+# https://til.simonwillison.net/github/dependabot-python-setup
+
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "13:00"
+  groups:
+    python-packages:
+      patterns:
+        - "*"
