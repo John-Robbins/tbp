@@ -4,11 +4,11 @@
 version: 2
 updates:
 - package-ecosystem: pip
-  directory: "/"
+  directory: "./"
   schedule:
     interval: daily
     time: "13:00"
   groups:
     python-packages:
       patterns:
-        - "*"
+      - "*"
