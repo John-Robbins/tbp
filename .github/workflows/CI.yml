@@ -313,10 +313,9 @@ jobs:
     - name: Upload artifact
       # Automatically uploads an artifact from the '.docs/_site' directory by
       # default. Making sure include-hidden-files is true as, well, see above.
-      uses: actions/upload-pages-artifact@v4
+      uses: actions/upload-pages-artifact@v3
       with:
         path: "docs/_site"
-        include-hidden-files: true
 
   deploy-docs-job:
     needs: [fight-github-job, build-docs-job]
