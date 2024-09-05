@@ -22,7 +22,7 @@
 # https://github.com/orgs/community/discussions/26251
 # https://github.com/orgs/community/discussions/13690
 #
-# The The Handling skipped but required checks documentation says to use a
+# "The Handling skipped but required checks" documentation says to use a
 # merge_group but merge queues require an organization so are not available to
 # little old me.
 #
@@ -40,6 +40,9 @@
 ###############################################################################
 
 # Many thanks to https://rhysd.github.io/actionlint/ for saving my bacon!
+
+name: "Code/Docs CI"
+
 on:
   # Runs on both pushes and PRs to main.
   push:
