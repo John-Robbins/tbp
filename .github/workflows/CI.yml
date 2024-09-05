@@ -280,9 +280,9 @@ jobs:
   # Based off the excellent work at https://github.com/just-the-docs/just-the-docs-template.
   # Thanks to all!
 
-  build-docs-job:
+  build-website-job:
     needs: fight-github-job
-    name: "Build Documents"
+    name: "Build Web Site"
     # Are there any document files that have changed?
     if: ${{needs.fight-github-job.outputs.docs == 'true'}}
     runs-on: ubuntu-latest
@@ -317,8 +317,9 @@ jobs:
       with:
         path: "docs/_site"
 
-  deploy-docs-job:
-    needs: [fight-github-job, build-docs-job]
+  deploy-website-job:
+    needs: [fight-github-job, build-website-job]
+    name: "Deploy Web Site"
     # If there are changed documents and this is the main branch, we'll deploy.
     if: (needs.fight-github-job.outputs.docs == 'true') && (github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
