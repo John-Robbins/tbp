@@ -104,8 +104,8 @@ jobs:
         # I can print them out in the jobs below.
         list-files: shell
         # For docs, I only care about all changes in the docs directory.
-        # For code, I care about added and modified files everywhere but
-        # nothing in the docs directory.
+        # For code, I care only about the .toml file and the two code
+        # directories, src and tests.
         filters: |
           docs:
             - added|modified|deleted: 'docs/**'
@@ -118,7 +118,7 @@ jobs:
         echo Code files: ${{steps.filter.outputs.code_files}}
     - name: "Changed Docs Files"
       run: |
-        echo Code files: ${{steps.filter.outputs.docs_files}}
+        echo Docs files: ${{steps.filter.outputs.docs_files}}
 
 
   #############################################################################
