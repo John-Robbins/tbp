@@ -46,10 +46,7 @@ name: "Code/Docs CI"
 on:
   # Runs on both pushes and PRs to main.
   push:
-    branches:
-    - "main"
-    # TODO: Remove this branch when finally finished wrestling with this.
-    - "branch-protections"
+    branches: ["main"]
   pull_request:
     branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab, which is

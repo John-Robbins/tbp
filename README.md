@@ -9,8 +9,7 @@
 [![mypy -strict](https://img.shields.io/badge/mypy-strict-green?style=flat-square&color=hsl(120%2C%20100%25%2C%2040%25))](https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict)
 [![Unit Test Count](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16/raw/unittestsbadge.json)](https://github.com/John-Robbins/tbp/tree/main/tests)
 [![Code Coverage Percentage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/John-Robbins/bd5e145f62ac1cf199a458977b8e1f16/raw/covbadge.json)](https://github.com/John-Robbins/tbp/actions/workflows/Code-CI.yml)
-[![Code CI](https://img.shields.io/github/actions/workflow/status/John-Robbins/tbp/Code-CI.yml?branch=main&style=flat-square&label=Code%20CI)](https://github.com/John-Robbins/tbp/actions/workflows/Code-CI.yml)
-[![Docs CI](https://img.shields.io/github/actions/workflow/status/John-Robbins/tbp/Docs-CI.yml?branch=main&style=flat-square&label=Docs%20CI)](https://John-Robbins.github.io/tbp)
+[![Code/Docs CI](https://img.shields.io/github/actions/workflow/status/John-Robbins/tbp/CI.yml?branch=main&style=flat-square&label=Code%2FDocs%20CI)](https://github.com/John-Robbins/tbp/actions/workflows/CI.yml)
 
 Tiny BASIC in Python (tbp) is an implementation of the [Tiny BASIC language](https://en.wikipedia.org/wiki/Tiny_BASIC) first proposed by [Dennis Allison](https://en.wikipedia.org/wiki/Dennis_Allison) in response to Bill Gate's "[An Open Letter to Hobbyists](https://en.wikipedia.org/wiki/An_Open_Letter_to_Hobbyists)." In 1976, [Dr. Tom Pittman](http://www.ittybittycomputers.com) developed his version of Tiny BASIC, which was one of many developed at that time. He has graciously posted on his [Tiny BASIC website](www.ittybittycomputers.com/IttyBitty/TinyBasic/index.htm) OCR'd copies of documentation, programs, and much more about that exciting time in computer history, which provided the inspiration for tbp.
 
