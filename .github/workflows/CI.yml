@@ -104,20 +104,21 @@ jobs:
         # I can print them out in the jobs below.
         list-files: shell
         # For docs, I only care about all changes in the docs directory.
-        # For code, I care about added and modified files everywhere but
-        # nothing in the docs directory.
+        # For code, I care only about the .toml file and the two code
+        # directories, src and tests.
         filters: |
           docs:
             - added|modified|deleted: 'docs/**'
           code:
-            - added|modified:'**'
-            - '!docs/**'
+            - modified:'pyproject.toml'
+            - added|modified|deleted: 'src/**'
+            - added|modified|deleted: 'tests/**'
     - name: "Changed Code Files"
       run: |
         echo Code files: ${{steps.filter.outputs.code_files}}
     - name: "Changed Docs Files"
       run: |
-        echo Code files: ${{steps.filter.outputs.docs_files}}
+        echo Docs files: ${{steps.filter.outputs.docs_files}}
 
 
   #############################################################################
@@ -177,7 +178,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install .[dev]
     # The unique part of this job.
-    - name: "Test and Coverage"
+    - name: "Run Tests and Coverage"
       # Generate the coverage data for this operating system.
       # The default name for the file is ".coverage", which is the same for
       # all operating systems and makes combining them later a little hard.
