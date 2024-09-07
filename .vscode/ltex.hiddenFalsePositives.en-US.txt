@@ -24,3 +24,5 @@
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe examples directory contains a number of sample Tiny BASIC programs for your enjoyment.\\E$"}
 {"rule":"AS_IS_VBG","sentence":"^\\QError #330: IF is missing the relational operator but found '%s'.\\E$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe examples directory holds sample Tiny BASIC programs for your enjoyment.\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:steam_locomotive: Change Log\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:steam_locomotive: Change Log\\E$"}

@@ -4,7 +4,8 @@ nav_order: 2
 layout: default
 permalink: getting-started
 ---
-<!-- markdownlint-disable MD026 MD025-->
+<!-- markdownlint-disable-next-line -->
+# Getting Started
 
 1. TOC
 {:toc}

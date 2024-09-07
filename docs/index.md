@@ -11,7 +11,7 @@ permalink: /
 {:.fs-9}
 
 {:.fs-6.fw-300}
-Dress up in your best corduroy suit or patterned jumper, it's time for some disco, so put the Bee Gees latest 45 on the turn table!
+Dress up in your best corduroy suit or patterned jumper, it's time for some disco, so put the Bee Gees latest 45 on the turn table and let's get coding like your grandparents!
 
 OK, you really don't have to dress in the epitome of 1970s fashions, do the bump, or listen to disco, but you will enjoy programming like it's 1976! Tiny BASIC in Python (tbp) is an implementation of the [Tiny BASIC language](https://en.wikipedia.org/wiki/Tiny_BASIC) that ran on the Intel 8080, the Motorola 6800, and the MOS Technologies 6502 processors and fit into 4K of memory.
 
@@ -23,7 +23,7 @@ Any problems/confusion? Please file an [issue](https://github.com/John-Robbins/t
 
 ## Some Usage Hints
 
-The links on the left of this page have detailed discussion of installation, usage, the Tiny BASIC language, and the tbp command language that controls the programming environment.
+The links on the left of this page have detailed discussion of installation, usage, the [Tiny BASIC language](tb-language), and the [tbp command language](tbp-command-language) that controls the programming environment.
 
 ### Prompts and Command Line Editing
 

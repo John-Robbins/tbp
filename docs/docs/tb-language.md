@@ -5,10 +5,8 @@ layout: default
 mathjax: true
 permalink: tb-language
 ---
-<!-- markdownlint-disable MD026 MD025-->
-
 <!-- markdownlint-disable-next-line -->
-#Tiny BASIC Language
+# Tiny BASIC Language
 {:.no_toc}
 
 1. TOC
@@ -44,7 +42,7 @@ If you looked closely at the second example, you might have noticed that Tiny BA
 
 You can execute Tiny BASIC statements in two ways. At the tbp prompt, `tbp:>`, you can directly execute a statement like [`RUN`](#run---execute-the-program-in-memory), which is more like a command. If the line begins with a number, it's considered a program line and tbp stores it in memory for later execution.
 
-If a statement starts with `%`, that is a [tbp command language](tbp-command-language) statement. Those are what you can use for executing the [debugger](tbp-command-language#the-tiny-basic-in-python-debugger), running the linter, and setting various options in tbp. You can read more about those command in the Command Language section.
+If a statement starts with `%`, that is a [tbp command language](tbp-command-language) statement. Those are what you can use for executing the [debugger](tbp-command-language#the-tiny-basic-in-python-debugger), running the [linter](tbp-command-language#linting-lint), and setting various options in tbp. You can read more about those command in the Command Language section.
 
 ## Expressions
 
@@ -170,7 +168,7 @@ I treat that as a warning. The original Tiny BASIC had a scheme where it stored 
 
 ### `PRINT` - Output
 
-It might be nice show data to the user of your awesome Tiny BASIC program and that's your `PRINT` statement, which you can abbreviate to `PR for space savings. This is the one statement that can work with string data. You may pass any sort of mix of strings, expressions, or the two print separators,`,` and `;`.
+It might be nice show data to the user of your awesome Tiny BASIC program and that's your `PRINT` statement, which you can abbreviate to `PR` for space savings. This is the one statement that can work with string data. You may pass any sort of mix of strings, expressions, or the two print separators,`,` and `;`.
 
 ```text
 tbp:>PRINT A

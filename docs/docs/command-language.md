@@ -4,7 +4,9 @@ nav_order: 4
 layout: default
 permalink: tbp-command-language
 ---
-<!-- markdownlint-disable MD026 MD025-->
+<!-- markdownlint-disable-next-line -->
+# tbp Command Language
+{:.no_toc}
 
 1. TOC
 {:toc}
@@ -134,7 +136,7 @@ The option command uses the following format:
 %opt required_option (true | false | <none>)
 ```
 
-Note that instead of requiring you to type out "true" or "false", they can be abbreviated to "t" or "f".
+Note that instead of requiring you to type out `true` or `false`, they can be abbreviated to `t` or `f`.
 
 Executing just the `%opt required_option` will show you the current state of that option.
 
@@ -156,7 +158,15 @@ Interpreter state: State.FILE_STATE
 
 The first line shows the source line about to be processed. The first part of the output shows the lexical scanner result. A token, `[IF (300,4)]` shows the token scanned followed by the line the token is on (i.e., the line number), which is 300 in this case. The second number is the column for the token, which is used in error reporting.
 
-The parsing section shows the breakdown of the language items, or the abstract syntax tree representation. Finally, it shows the current state of the state machine inside the tree walking interpreter.
+The parsing section shows the breakdown of the language items, or the abstract syntax tree representation. Finally, it shows the current state of the state machine inside the tree walking interpreter. The interpreter states are in the table below.
+
+| State | Description |
+|-------|-------------|
+|`LINE_STATE` | The user is typing lines in directly at the tbp prompt.|
+|`FILE_STATE` | When reading a file from disk into memory. |
+|`RUNNING_STATE`| Executing a program. |
+|`BREAK_STATE`| Stopped at a breakpoint.|
+|`ERROR_FILE_STATE` | When reading lines out of a file, but had an earlier error so tbp continues parsing and reporting additional errors, but don't execute any code after finishing the file.|
 
 When running a program in memory, the logging output shows you each line as it is executed. In the example below, you can see that the [`GOTO`](tb-language#goto---jump-to-line) was executed moving the instruction pointer from line 900 to line 180.
 
@@ -275,7 +285,7 @@ You can look at all the *initialized* variables with the `%v` command. In fact, 
 tbp:>RUN
 Breakpoint: 200
 [200 IF J = 0 THEN GOTO 265]
-DEBUG(200):>%vars
+DEBUG(200):>%v
 C=3         I=1         J=27        N=10        S=256
 DEBUG(200):>
 ```

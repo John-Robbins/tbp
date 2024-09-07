@@ -57,3 +57,5 @@ permalink: faq
     |`interpreter.py`| The tree walking interpreter that takes care of execution and debugging.|
     |`driver.py` | "Drives" the `Interpreter` class and handles the tbp command language.|
     |`__main__.py`|The entry point for the command line program.|
+
+    See [Contributing](Contributing) for how to get setup for development.
