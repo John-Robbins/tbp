@@ -31,3 +31,5 @@
 {"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:joy_cat: Some of you know where this is going.\\E$"}
 {"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:joy_cat: Some of you know where this is going.\\E$"}
 {"rule":"TOO_LONG_PARAGRAPH","sentence":"^\\Q^8: And pointing the fickle finger of blame!\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
