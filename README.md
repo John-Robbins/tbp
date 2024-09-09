@@ -60,7 +60,7 @@ It seemed nuts to put this up on PyPI, which is for important modules, not learn
 
 ### Cloning and Installing
 
-Download the code from here as a .ZIP file. Expand that file into a directory, then execute the following.
+Download the code from the [Latest](https://github.com/John-Robbins/tbp/releases/latest) release. Expand the compressed file into a directory, then execute the following.
 
 ```bash
 % pip install .
