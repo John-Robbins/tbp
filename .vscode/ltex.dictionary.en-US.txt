@@ -63,3 +63,17 @@ Otten
 IntelliSense
 Batchelder
 scriv
+jekyll
+Wintellect
+CodeSpaces
+Arie
+Bovenberg
+actionlint
+rhysd
+NuMega
+monorepo
+@dorny
+%raw%
+%endraw%
+hack-arounds
+mergeable

@@ -154,6 +154,9 @@ jobs:
     - name: Pylint Lint
       run: pylint --rcfile pyproject.toml src/ tests/
 
+  # Major bug alert. This is a job with a matrix and there's a 4+ year old bug
+  # where matrix jobs don't properly report status.
+  # https://github.com/orgs/community/discussions/26822
   test-cov-job:
     needs: [fight-github-job, lint-types-job]
     name: "Tests & Coverage"
@@ -222,8 +225,29 @@ jobs:
         # SemVer be damned!
         include-hidden-files: true
 
-  cov-report-job:
+  # Here's the workaround for GitHub matrix jobs not having proper status
+  # reporting.
+  # https://github.com/orgs/community/discussions/26822#discussioncomment-5122101
+  # https://github.com/sounisi5011/npm-packages/blob/2a5ca2de696eeb8b40a38de90580441c4c6c96e0/.github/workflows/ci.yaml#L482-L498
+  the-sad-did-github-matrix-succeed-job:
     needs: [fight-github-job, test-cov-job]
+    name: "Did Test & Coverage Succeed?"
+    # Note the different condition here. If it wasn't always(), PR's on
+    # protected branches would never run.
+    if: ${{always()}}
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Why is this not part of a matrix job?"
+      if: >-
+        ${{
+             contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+        }}
+      run: exit 1
+
+
+  cov-report-job:
+    needs: [fight-github-job, the-sad-did-github-matrix-succeed-job]
     name: "Coverage Report"
     # Only run on changed code files.
     if: ${{needs.fight-github-job.outputs.code == 'true'}}

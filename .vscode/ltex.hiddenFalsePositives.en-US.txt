@@ -26,3 +26,10 @@
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QThe examples directory holds sample Tiny BASIC programs for your enjoyment.\\E$"}
 {"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:steam_locomotive: Change Log\\E$"}
 {"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:steam_locomotive: Change Log\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:scream_cat: ^6: Why does it seem Ruby is so hard to install on macOS?\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:scream_cat: ^6: Why does it seem Ruby is so hard to install on macOS?\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:joy_cat: Some of you know where this is going.\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:joy_cat: Some of you know where this is going.\\E$"}
+{"rule":"TOO_LONG_PARAGRAPH","sentence":"^\\Q^8: And pointing the fickle finger of blame!\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
+{"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}

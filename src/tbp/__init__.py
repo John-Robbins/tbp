@@ -12,5 +12,5 @@ from __future__ import annotations
 # Module information.
 ###############################################################################
 
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 __author__ = "John Robbins"
