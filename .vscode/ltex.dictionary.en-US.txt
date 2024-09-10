@@ -75,3 +75,5 @@ monorepo
 @dorny
 %raw%
 %endraw%
+hack-arounds
+mergeable

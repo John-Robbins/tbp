@@ -331,7 +331,7 @@ In the above example, I'm repeating the exact same setup each time. Does the `te
 
 Thinking that [reusable workflows](https://docs.github.com/en/actions/sharing-automations/reusing-workflows) would be the answer, I went down that path. I wanted to encapsulate the common setup work, and pass in the `runs-on` value. Although it's been almost three years since someone asked, there's no official support for [array input type support](https://github.com/orgs/community/discussions/11692). I fumbled around with an [idea](https://github.com/orgs/community/discussions/11692#discussioncomment-3541856) I found in the actions discussions, but I could never get it to work. I gave up on reusable workflows and repeated myself because working code always wins.
 
-After a while of trial and error, I had two workflows, one for code and one for docs. They were working great where I could run them manually on branches, and automatically on pushes to main. Life was good, and then my code workflow stopped working. My workflow worked on a Sunday and died on a Monday. Being brand new to workflows, I struggled for several hours as to why my artifact uploads no longer worked. Yeah, you know where this is going: [Upcoming breaking change: Hidden Files will be excluded by default](https://github.com/actions/upload-artifact/issues/602). Why did a breaking change not involve a major version bump? I'm old enough to remember when a [GitHub co-founder](http://tom.preston-werner.com/) first proposed [SemVer](https://semver.org/spec/v2.0.0.html), which I thought was a very good attempt at bringing sanity to version numbers. Is SemVer merely a suggestion at GitHub these days?
+After a bit of trial and error, I had two workflows, one for code and one for docs. They were working great where I could run them manually on branches, and automatically on pull requests and pushes to main. Life was good, and then my code workflow stopped working. My workflow worked on a Sunday and died on a Monday. Being brand new to workflows, I struggled for several hours as to why my artifact uploads no longer worked. Yeah, you know where this is going: [Upcoming breaking change: Hidden Files will be excluded by default](https://github.com/actions/upload-artifact/issues/602). Why did a breaking change not involve a major version bump? I'm old enough to remember when a [GitHub co-founder](http://tom.preston-werner.com/) first proposed [SemVer](https://semver.org/spec/v2.0.0.html), which I thought was a very good attempt at bringing sanity to version numbers. Is SemVer merely a suggestion at GitHub these days?
 
 While I understand the [security issue](https://unit42.paloaltonetworks.com/github-repo-artifacts-leak-tokens/) that brought about this breaking change, how GitHub handled it was, honestly, abysmal. Why was there no warning about this change in the workflow run output? Why was there no prominent mention of this breaking change on the [`@actions/upload-artifact`](https://github.com/actions/upload-artifact) repository home page? I wonder what else will randomly and silently break in my workflows after this debacle? Please, you can do better.
 
@@ -462,6 +462,10 @@ test-cov-job:
   # Only run on changed code files.
   if: ${{needs.fight-github-job.outputs.code == 'true'}}
   runs-on: ${{ matrix.os }}
+  strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.12"]
   . . .
 build-website-job:
   needs: fight-github-job
@@ -473,9 +477,45 @@ build-website-job:
 
 {%endraw%}
 
-Now I have the best of both worlds. With skipped jobs always treated as successful in protected branches, I can require all five jobs for a PR to pass but only run the minimum set of jobs required by the changes. Ideally, GitHub would produce a fully supported solution for branch protections and required checks. However, after five years of asking, I don't think that's on the product backlog. If that's so, having the steps I outlined here to make branch protections and workflow jobs play well together would be invaluable in the documentation.
+Now I have the best of both worlds. With skipped jobs always treated as successful in protected branches, I can require all five jobs for a PR to pass but only run the minimum set of jobs required by the changes...[RECORD SCRATCH!](https://www.myinstants.com/en/instant/record-scratch/) There's another bug in GitHub Actions to deal with.
 
-Overall, I'm loving GitHub Actions, protected branches, and the other changes! These are the kinds of features that I remember dreaming we could have back when I was working. While I hit a few bumps, which were minimal in the big scheme of life, I was very happy how my CI and project management parts in GitHub came together. If I could have only one ask it would be that the GitHub Actions documentation [Use cases and examples](https://docs.github.com/en/actions/use-cases-and-examples) section take a task based approach to the introduction. In my opinion, that wholistic approach would eliminate a lot of confusion in learning.
+In the YAML snippet above, you see that the `Test & Coverage` is one-dimensional matrix job that will run pytest and coverage.py on each of the operating systems. In my branch protections rule, I have `Test & Coverage` set as one of the status checks that must pass. It seems logical to me that the result of the individual matrix jobs would roll up into a result of the containing job. I'm finding out with GitHub Actions, thinking logically doesn't always work.
+
+When my [CI.yml](https://github.com/John-Robbins/tbp/blob/b97b7a25963bf201d4609d8aa40d6afb47bf61b5/.github/workflows/CI.yml) runs, all appropriate jobs run when code changes, but the status checks fail even though every sub job of `Test & Coverage` job matrix was successful. There's a bug in matrix containing job, such as I have here, that doesn't report status correctly. Thus, all my pull requests remain in purgatory never mergeable unless I manually skip the status checks for the protected branch. That defeats the whole purpose of branch protections in the first place. Of course, the [status checks documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) mentions nothing about this [4+ year old problem](https://github.com/orgs/community/discussions/26822).
+
+As always, it's GitHub users to the rescue with [hack-around](https://github.com/orgs/community/discussions/26822#discussioncomment-5122101). What you need to do is have a job that needs your matrix job, so it runs afterwards.
+
+{%raw%}
+
+```yaml
+the-sad-did-github-matrix-succeed-job:
+  needs: [fight-github-job, test-cov-job]
+  name: "Did Test & Coverage Succeed?"
+  # Note the different condition here. If it wasn't always(), PR's on
+  # protected branches would never run.
+  if: ${{always()}}
+  runs-on: ubuntu-latest
+  steps:
+  - name: "Why is this not part of a matrix job?"
+    if: >-
+      ${{
+           contains(needs.*.result, 'failure')
+        || contains(needs.*.result, 'cancelled')
+      }}
+    run: exit 1
+```
+
+{%endraw%}
+
+The above YAML snippet shows the `the-sad-did-github-matrix-succeed-job`, which needs `test-cov-job` and can check to see if there were failures in it. Back in my branch protection rules settings, I removed the malfunctioning `Test & Coverage` job and added `Did Test & Coverage Succeed?` to the required status checks.
+
+Now I think you can see why at the beginning of this section I asked if the branch protection and GitHub Actions teams had ever talked. It feels like they haven't, based on my experience thus far. What's frustrating is that tbp is a very simple Python module and yet there was this extra friction to do two basic tasks: 1) test tbp and the build the documentation and 2) use branch protections.
+
+Ideally, GitHub would produce a fully supported solution for branch protections and required checks. However, after five years of asking, I don't think that's on the product backlog. If that's so, having the steps I outlined here to make branch protections and workflow jobs play well together would be invaluable in the documentation.
+
+Overall, I'm very thankful for GitHub Actions, protected branches, and the other changes. These are the kinds of features that I remember dreaming we could have back when I was working. While I hit long-standing issues, at least the community had hack-arounds. I deeply appreciate everything I'm getting from GitHub/Microsoft for free so am not complaining at all! I just thought it would be valuable for interested parties to see how a brand-new user worked through solving problems with key GitHub technologies.
+
+If I could have only one ask it would be that the GitHub Actions documentation [Use cases and examples](https://docs.github.com/en/actions/use-cases-and-examples) section take a task-based approach to the introduction. Additionally, *DO* talk about the workarounds necessary to have a fully functioning solution, which I hope I did here. That wholistic approach would end a lot of confusion in learning and get new users off on the right foot.
 
 ## What's Next for Tiny BASIC in Python?
 
