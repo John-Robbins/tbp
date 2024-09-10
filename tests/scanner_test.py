@@ -3,7 +3,7 @@
 ###############################################################################
 # Tiny BASIC in Python
 # Licensed under the MIT License.
-# Copyright (c) 2004 John Robbins
+# Copyright (c) 2024 John Robbins
 ###############################################################################
 
 from __future__ import annotations
