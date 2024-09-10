@@ -193,7 +193,8 @@ class Driver:
    lint         |
    savefile     |  \bsf\b  |
    step         |  \bs\b   |
-   vars         |  \bv\b
+   vars         |  \bv\b   |
+   exit         |  \be\b
  )
 \s*
 (?P<param>
@@ -271,15 +272,26 @@ class Driver:
                 self._command_stepper(Interpreter.BreakContinueType.STEP)
             case "backtrace" | "bt":
                 self._command_stack()
+            case "exit" | "e":
+                self._command_exit_debugger()
             case _:  # pragma: no cover
                 pass  # pragma: no cover
 
         return Driver.CmdResult.CONTINUE
 
+    def _command_exit_debugger(self: Driver) -> None:
+        """Exit the debugger and returns to the tbp prompt."""
+        if self._interpreter.at_breakpoint() is False:
+            print_output("CLE #08: %exit command only works while debugging.\n")
+        else:
+            # The END statement already knows how to drop out of the debugger
+            # so I can use it here to do the work.
+            self._interpreter.interpret_line("END")
+
     def _command_stack(self: Driver) -> None:
         """Show the call stack."""
         if self._interpreter.at_breakpoint() is False:
-            print_output("CLE #08: %bt command only works while debugging.\n")
+            print_output("CLE #08: %backtrace command only works while debugging.\n")
         else:
             res: str = self._interpreter.stack_string()
             print_output(res)
@@ -290,9 +302,9 @@ class Driver:
     ) -> None:
         """Execute a single step."""
         if self._interpreter.at_breakpoint() is False:
-            cmd: str = "%c"
+            cmd: str = "%continue"
             if step_type == Interpreter.BreakContinueType.STEP:
-                cmd = "%s"
+                cmd = "%step"
             print_output(f"CLE #08: {cmd} command only works while debugging.\n")
             return
 
@@ -438,7 +450,7 @@ class Driver:
     ###########################################################################
 
     _LOGO: str = f"""
-  Tiny BASIC in Python - github.com/John-Robbins/tbp
+  Tiny BASIC in Python - https://github.com/John-Robbins/tbp
    _______ ____
   |__   __|  _ \\
      | |  | |_) |_ __
@@ -517,10 +529,10 @@ class Driver:
 
 A complete Tiny BASIC interpreter and debugger.
 To learn more about the Tiny BASIC language, see the documentation at
-http://github.com/john-robbins/tbp/docs/tinybasic/tinybasic-users-manual.html
+https://john-robbins.github.io/tbp/tb-language
 
 To learn more about Tiny BASIC in Python, see the extensive documentation at
-http://github.com/john-robbins/tbp/docs/
+https://john-robbins.github.io/tbp/
 
 Command Line Options
 --------------------
@@ -584,6 +596,8 @@ Debugging Commands
      - Displays all the initialized variables.
 %bt | %backtrace
      - Display the call stack.
+%e  | %exit
+     - Exit the debugger and return to tbp prompt.
 """
 
     _SHORTHELP: str = """
@@ -618,4 +632,6 @@ Debugging Commands
      - Displays all the initialized variables.
 %bt | %backtrace
      - Display the call stack.
+%e  | %exit
+     - Exit the debugger and return to tbp prompt.
 """

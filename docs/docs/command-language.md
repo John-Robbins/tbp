@@ -315,7 +315,7 @@ C=3         I=1         J=26        N=10        S=256
 DEBUG(200):>
 ```
 
-### Seeing the Call Stack
+### Seeing the Call Stack: `%bt` | `%backtrace`
 
 While Tiny BASIC is not a language you are going use to write a recursive descent parser, it does support calling procedures with [`GOSUB`](tb-language#gosubreturn---call-toreturn-from-a-procedure) and [`RETURN`](tb-language#gosubreturn---call-toreturn-from-a-procedure). Using the [`deep.tbp`](https://github.com/John-Robbins/tbp/blob/main/examples/deep.tbp) test program here's an example of its output.
 
@@ -331,6 +331,15 @@ DEBUG(200):>%bt
 930 RETURN
 40 END
 DEBUG(200):>
+```
+
+### Exiting the Debugger: `%e` | `%exit`
+
+If you want to stop debugging and end program execution while at a debugger prompt, use the `%e` command to return to the normal tbp prompt.
+
+```text
+DEBUG(420):>%exit
+tbp:>
 ```
 
 ### Debugging Tips and Tricks

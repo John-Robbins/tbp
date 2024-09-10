@@ -923,7 +923,10 @@ class Interpreter(Visitor):
     def visit_end_statement(self: Interpreter, end: End) -> LanguageItem:
         """Process an END statement."""
         del end
-        if self._the_state == Interpreter.State.RUNNING_STATE:
+        if self._the_state in {
+            Interpreter.State.RUNNING_STATE,
+            Interpreter.State.BREAK_STATE,
+        }:
             # Clean up possible RUN parameters that were not used.
             self.initialize_runtime_state()
         return cast(End, None)  # pragma: no cover
