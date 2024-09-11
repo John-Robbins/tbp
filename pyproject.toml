@@ -250,6 +250,7 @@ reportUnusedImport = false
 reportUnnecessaryComparison = false
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false
+typeCheckingMode = "strict"
 
 
 ####################
