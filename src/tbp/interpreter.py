@@ -1130,13 +1130,7 @@ class Interpreter(Visitor):
                 # Build up the prompt.
                 prompt_text = self._build_input_prompt(curr_index, input_stmt.variables)
                 # Ask the user for input.
-                input_good, raw_text = read_input(prompt_text)
-                if input_good is False:
-                    # Indicate to the rest of the interpreter that the user hit
-                    # CTRL+C or CTRL+D.
-                    self.initialize_runtime_state()
-                    print_output("Error #350: Aborting RUN from INPUT entry.\n")
-                    return cast(Input, None)
+                raw_text = read_input(prompt_text)
 
                 # Split the input string on commas.
                 raw_list = raw_text.split(",")

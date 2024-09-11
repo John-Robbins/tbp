@@ -108,9 +108,7 @@ class Driver:
         # Run away!
         while continue_running is True:
             prompt: str = self._build_prompt()
-            cmd_result, cmd_to_do = read_input(prompt)
-            if cmd_result is False:
-                break
+            cmd_to_do = read_input(prompt)
             continue_running = self._execute_line(cmd_to_do.strip())
 
         return 0

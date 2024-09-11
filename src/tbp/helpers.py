@@ -118,17 +118,9 @@ def print_output(message: str) -> None:
 ###############################################################################
 
 
-def read_input(prompt: str) -> tuple[bool, str]:
+def read_input(prompt: str) -> str:
     """Read input from the user."""
-    result_str: str = ""
-    result_flag: bool = True
-
-    try:
-        result_str = input(prompt)
-    except (EOFError, KeyboardInterrupt):
-        result_flag = False
-
-    return result_flag, result_str
+    return input(prompt)
 
 
 # The minimum number of entries in the valid_input list for limit_input.
