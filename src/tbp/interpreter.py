@@ -144,6 +144,14 @@ class Interpreter(Visitor):
         self._one_shot_breakpoints: list[int] = []
 
     ###########################################################################
+    # PUBLIC: Interpret Properties
+    ###########################################################################
+    @property
+    def current_state(self: Interpreter) -> Interpreter.State:
+        """Return the current state."""
+        return self._the_state
+
+    ###########################################################################
     # PUBLIC: Interpret Methods
     ###########################################################################
 
@@ -340,10 +348,6 @@ class Interpreter(Visitor):
 
         self._breakpoints.remove(line_number)
         return True, ""
-
-    def at_breakpoint(self: Interpreter) -> bool:
-        """Public method the driver can call to see the state."""
-        return self._the_state == Interpreter.State.BREAK_STATE
 
     def break_continue(self: Interpreter, step: Interpreter.BreakContinueType) -> None:
         """Tell the interpreter how to continue from a breakpoint."""

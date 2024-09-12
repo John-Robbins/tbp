@@ -34,8 +34,8 @@ def test_empty_cmd_lang(
 ) -> None:
     """Test '%'."""
     driver: Driver = Driver()
-    input_data = StringIO("%")
-    monkeypatch.setattr("sys.stdin", input_data)
+    cmds = iter(["%", "%q"])
+    monkeypatch.setattr("builtins.input", lambda _: next(cmds))
     ret: int = driver.party_like_it_is_1976(empty_opts)
     assert ret == 0
     output = capsys.readouterr()
@@ -61,10 +61,9 @@ def test_cmd_short_help(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test '%?^%q'."""
-    commands = r"%?\n%q\n"
+    cmds = iter(["%?", "%q"])
     driver: Driver = Driver()
-    input_data = StringIO(commands)
-    monkeypatch.setattr("sys.stdin", input_data)
+    monkeypatch.setattr("builtins.input", lambda _: next(cmds))
     ret: int = driver.party_like_it_is_1976(empty_opts)
     assert ret == 0
     output = capsys.readouterr()
@@ -76,10 +75,9 @@ def test_cmd_long_help(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test '%help^%q'."""
-    commands = r"%help\n%q\n"
+    cmds = iter(["%help", "%q"])
     driver: Driver = Driver()
-    input_data = StringIO(commands)
-    monkeypatch.setattr("sys.stdin", input_data)
+    monkeypatch.setattr("builtins.input", lambda _: next(cmds))
     ret: int = driver.party_like_it_is_1976(
         Driver.Options(nologo=False, file="", commands=""),
     )
@@ -94,10 +92,9 @@ def test_cmd_log_alone(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test '%opt log'."""
-    commands = r"%opt log\n"
+    cmds = iter(["%opt log", "%q"])
     driver: Driver = Driver()
-    input_data = StringIO(commands)
-    monkeypatch.setattr("sys.stdin", input_data)
+    monkeypatch.setattr("builtins.input", lambda _: next(cmds))
     ret: int = driver.party_like_it_is_1976(empty_opts)
     assert ret == 0
     output = capsys.readouterr()

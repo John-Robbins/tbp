@@ -122,7 +122,7 @@ class Driver:
         # This is what the prompt will be 99% of the time.
         prompt_str: str = Driver._DEFAULT_PROMPT
 
-        if self._interpreter.at_breakpoint() is True:
+        if self._interpreter.current_state == Interpreter.State.BREAK_STATE:
             # What source line have we stopped on?
             curr_line: int = self._interpreter.current_line_number()
             prompt_str = f"DEBUG({curr_line}):>"
@@ -138,7 +138,10 @@ class Driver:
         if cmd[0] == Driver._CMD_LANG_PREFIX:
             if self._process_command_language(cmd) == Driver.CmdResult.QUIT:
                 return False
-        elif self._interpreter.at_breakpoint() and cmd[0:3].lower() == "run":
+        elif (
+            self._interpreter.current_state == Interpreter.State.BREAK_STATE
+            and cmd[0:3].lower() == "run"
+        ):
             # We have one more check. If we are at a breakpoint and the user
             # entered the RUN statement, we don't want to do that because it
             # restarts the program. We want the user to use %c instead.
@@ -279,7 +282,7 @@ class Driver:
 
     def _command_exit_debugger(self: Driver) -> None:
         """Exit the debugger and returns to the tbp prompt."""
-        if self._interpreter.at_breakpoint() is False:
+        if self._interpreter.current_state != Interpreter.State.BREAK_STATE:
             print_output("CLE #08: %exit command only works while debugging.\n")
         else:
             # The END statement already knows how to drop out of the debugger
@@ -288,7 +291,7 @@ class Driver:
 
     def _command_stack(self: Driver) -> None:
         """Show the call stack."""
-        if self._interpreter.at_breakpoint() is False:
+        if self._interpreter.current_state != Interpreter.State.BREAK_STATE:
             print_output("CLE #08: %backtrace command only works while debugging.\n")
         else:
             res: str = self._interpreter.stack_string()
@@ -299,7 +302,7 @@ class Driver:
         step_type: Interpreter.BreakContinueType,
     ) -> None:
         """Execute a single step."""
-        if self._interpreter.at_breakpoint() is False:
+        if self._interpreter.current_state != Interpreter.State.BREAK_STATE:
             cmd: str = "%continue"
             if step_type == Interpreter.BreakContinueType.STEP:
                 cmd = "%step"
@@ -383,7 +386,7 @@ class Driver:
     def _command_loadfile(self: Driver, filename: str) -> None:
         """Load a program from disk."""
         # If we are debugging, %openfile can't be used.
-        if self._interpreter.at_breakpoint() is True:
+        if self._interpreter.current_state == Interpreter.State.BREAK_STATE:
             self._command_language_error("CLE #15: %loadfile disabled while debugging.")
             return
         # Is the filename empty?
