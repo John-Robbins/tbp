@@ -534,7 +534,7 @@ class Interpreter(Visitor):
 
         return False
 
-    def _set_one_shots(self: Interpreter) -> None:  # noqa: C901 pylint: disable=too-complex
+    def _set_one_shots(self: Interpreter) -> None:  # pylint: disable=too-complex
         """
         Find the address to step into.
 

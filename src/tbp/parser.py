@@ -123,9 +123,8 @@ class Parser:
     # TODO@John-Robbins: Is the dictionary of method pointers the way to go?
     # Doing this lookup with a bunch of if statements or case statements will
     # yield a high McCabe complexity number.
-    # PLR0911: Too many return statements (10 > 6)
     # pylint: disable=too-complex, too-many-branches
-    def _statement(self: Parser) -> LanguageItem:  # noqa: PLR0911, C901, PLR0912
+    def _statement(self: Parser) -> LanguageItem:
         """Parse a statement on the line."""
         if self._match(TokenType.PRINT):
             return self._print_statement()
@@ -214,8 +213,7 @@ class Parser:
         expression: LanguageItem = self._primary()
         return expression
 
-    # TODO@John-Robbins: Keeping this here as a note to myself.
-    def _primary(self: Parser) -> LanguageItem:  # noqa: PLR0911
+    def _primary(self: Parser) -> LanguageItem:
         """Parse the terminals from the line."""
         curr_token: Token = self._peek()
         if self._match(TokenType.NUMBER):
