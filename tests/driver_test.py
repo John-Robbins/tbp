@@ -347,12 +347,12 @@ def test_commands_quit(
     capsys: CaptureFixture[str],
 ) -> None:
     """Test `tbp -c stuff'."""
-    opts = Driver.Options(nologo=True, file="", commands="%q")
+    opts = Driver.Options(nologo=True, file="", commands="%opt log^%q")
     driver: Driver = Driver()
     ret: int = driver.party_like_it_is_1976(opts)
     output = capsys.readouterr()
     assert ret == 0
-    assert "Thank you for using tbp! Your patronage is appreciated." in output.out
+    assert "Option: logging is False." in output.out
 
 
 def test_line_timer(

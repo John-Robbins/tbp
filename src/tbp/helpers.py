@@ -179,6 +179,8 @@ def limit_input(prompt: str, valid_input: list[str]) -> tuple[bool, str]:
         except (EOFError, KeyboardInterrupt):
             result_flag = False
             keep_asking = False
+            # Add a newline so we don't have the prompt looking weird.
+            print_output("\n")
 
     return False, ""
 
@@ -202,8 +204,10 @@ def save_program(filename: str, program: str) -> bool:
                 yes_no,
             )
             if (overwrite is False) or (res == "n"):
+                print_output("Program not saved.\n")
                 return False
         with the_file.open(mode="w", encoding="utf-8") as f:
+            print_output("Program saved.\n")
             f.write(program)
     except (RuntimeError, FileNotFoundError):
         print_output(f"CLE #12: Filename is invalid '{filename}'.\n")

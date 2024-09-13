@@ -230,33 +230,32 @@ class Interpreter(Visitor):
 
         """
         final_return: bool = True
-        try:
-            # Set the state flag so other methods know we are parsing a buffer.
-            self._the_state = Interpreter.State.FILE_STATE
-            # Set to False if there was an error parsing.
-            self._file_line = 1
 
-            # Fake reading this memory buffer as a file. I like this trick.
-            file = StringIO(source)
+        # Set the state flag so other methods know we are parsing a buffer.
+        self._the_state = Interpreter.State.FILE_STATE
+        # Set to False if there was an error parsing.
+        self._file_line = 1
 
-            current_line: str = file.readline()
-            while current_line:
-                # It's perfectly fine to have empty lines.
-                if (current_line != "\n") and (
-                    self.interpret_line(current_line) is False
-                ):
-                    self._the_state = Interpreter.State.ERROR_FILE_STATE
-                    final_return = False
-                current_line = file.readline()
-                self._file_line += 1
+        # Fake reading this memory buffer as a file. I like this trick.
+        file = StringIO(source)
 
-            if self._the_state == Interpreter.State.ERROR_FILE_STATE:
-                # Clear out any loaded program so we don't have half programs
-                # floating around.
-                self.clear_program()
-                self.initialize_runtime_state()
-        finally:
-            self._the_state = Interpreter.State.LINE_STATE
+        current_line: str = file.readline()
+        while current_line:
+            # It's perfectly fine to have empty lines.
+            if (current_line != "\n") and (self.interpret_line(current_line) is False):
+                self._the_state = Interpreter.State.ERROR_FILE_STATE
+                final_return = False
+            current_line = file.readline()
+            self._file_line += 1
+
+        if self._the_state == Interpreter.State.ERROR_FILE_STATE:
+            # Clear out any loaded program so we don't have half programs
+            # floating around.
+            self.clear_program()
+            self.initialize_runtime_state()
+
+        # We are done processing the file so go back to the normal state.
+        self._the_state = Interpreter.State.LINE_STATE
 
         return final_return
 

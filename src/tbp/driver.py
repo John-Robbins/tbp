@@ -62,6 +62,7 @@ class Driver:
         # user can change this with: %opt run_file_load t|f
         self._run_after_file_load: bool = False
 
+    # pylint: disable=too-complex, too-many-branches
     def party_like_it_is_1976(self: Driver, options: Options) -> int:
         """
         Entry point for the Tree Walking Interpreter.
@@ -97,7 +98,9 @@ class Driver:
             input_list = options.commands.split("^")
             cmds_to_run.extend(input_list)
 
-        # Run the commands starting with the %of if present.
+        exit_code: int = 0
+
+        # Run the commands starting with the %lf if present.
         for cmd in cmds_to_run:
             if self._execute_line(cmd) is False:
                 return 0
@@ -107,11 +110,52 @@ class Driver:
 
         # Run away!
         while continue_running is True:
-            prompt: str = self._build_prompt()
-            cmd_to_do = read_input(prompt)
-            continue_running = self._execute_line(cmd_to_do.strip())
+            try:
+                prompt: str = self._build_prompt()
+                cmd_to_do = read_input(prompt)
+                continue_running = self._execute_line(cmd_to_do.strip())
+            except (KeyboardInterrupt, EOFError) as exp:
+                # No matter what, we need to force a newline so the prompt
+                # doesn't stay on the same line looking ugly.
+                print_output("\n")
 
-        return 0
+                # Reminder:
+                #   CTRL+C generates a KeyboardInterrupt exception.
+                #   CTRL+D generates a EOFError exception.
+                # How we process these is all dependent on the current
+                # state.
+                if self._interpreter.current_state == Interpreter.State.RUNNING_STATE:
+                    if isinstance(exp, KeyboardInterrupt):
+                        print_output(
+                            "Keyboard Interrupt: Breaking out of program at line "
+                            f"{self._interpreter.current_line_number()}.\n",
+                        )
+                        self._interpreter.initialize_runtime_state()
+                elif self._interpreter.current_state in {
+                    Interpreter.State.LINE_STATE,
+                    Interpreter.State.BREAK_STATE,
+                }:
+                    if isinstance(exp, EOFError):
+                        print_output("EOF interrupt: exiting tbp.\n")
+                        exit_code = 1
+                        continue_running = False
+                elif self._interpreter.current_state in {
+                    Interpreter.State.FILE_STATE,
+                    Interpreter.State.ERROR_FILE_STATE,
+                } and isinstance(exp, KeyboardInterrupt):
+                    print_output(
+                        "Keyboard Interrupt: Aborting file loading, "
+                        "no program in memory.\n",
+                    )
+                    # It's a FILE_STATE or ERROR_FILE_STATE so cancel everything.
+                    self._interpreter.initialize_runtime_state()
+                    self._interpreter.clear_program()
+
+        print_output(
+            "\nThank you for using tbp! Your patronage is appreciated.\n",
+        )
+
+        return exit_code
 
     ###########################################################################
     # Private Helper Methods
@@ -216,21 +260,14 @@ class Driver:
 
     _CMD_REGEX = re.compile(_CMD_REGEX_STRING, re.IGNORECASE | re.VERBOSE)
 
-    # The circularity of the tools is weird. The Ruff warning suppression has
-    # to appear at the end of the line, but that makes the line too long for
-    # pylint. 🤷🏾‍♀️
-
-    # C901: https://docs.astral.sh/ruff/rules/complex-structure/
-    # PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches/
-
+    # I've bumped up the Ruff defaults to branches and returns.
     # While it would be easy to disable these complexity rules, I still think
     # they are valuable as a reminder to keep an eye on the procedure. There's
     # probably some table driven way to simplify this code, but I think that
     # would veer into the maintenance hell mode. Sometimes case statements are
     # the best way to go.
 
-    # pylint: disable=line-too-long
-    def _process_command_language(self: Driver, cmd: str) -> Driver.CmdResult:  # noqa: C901, PLR0912
+    def _process_command_language(self: Driver, cmd: str) -> Driver.CmdResult:
         """Do the '%' commands."""
         # Pull out what the user want's to do.
         if (m := self._CMD_REGEX.match(cmd)) is None:
@@ -241,9 +278,6 @@ class Driver:
 
         match m.group(Driver._CMD_GROUP).lower():
             case "q" | "quit":
-                print_output(
-                    "\nThank you for using tbp! Your patronage is appreciated.\n",
-                )
                 return Driver.CmdResult.QUIT
             case "?":
                 print_output(Driver._SHORTHELP)
@@ -402,9 +436,7 @@ class Driver:
         if program := load_program(filename):
             self._load_program_and_run(program)
 
-    # PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches/
-    # C901: https://docs.astral.sh/ruff/rules/complex-structure/
-    def _command_opt(self: Driver, option: str, value: str) -> None:  # noqa: C901, PLR0912
+    def _command_opt(self: Driver, option: str, value: str) -> None:
         """Change run on load and timing options."""
         if not (option := option.lower()):
             self._command_language_error("CLE #04: Required option is missing.")
