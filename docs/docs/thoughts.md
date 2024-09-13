@@ -87,12 +87,12 @@ Runtime Error: Error #336: Accessing uninitialized variable 'D'.
 -------------------------------------------------------^
 ```
 
-Another area where I thought I did well was the unit tests and code coverage. With 280-unit tests and 99% coverage overall, I flushed a ton of bugs out with the tests. Additionally, I have mypy, ruff, and pylint cranked up to their equivalent strict mode with only 13 rules disabled in pyproject.toml. I always got a little thrill running `make` and seeing all those checks and tests.
+Another area where I thought I did well was the unit tests and code coverage. With 290-unit tests and 99.88% coverage overall, I flushed a ton of bugs out with those tests. Additionally, I have mypy, ruff, and pylint cranked up to their equivalent strict mode with only 13 rules disabled in pyproject.toml. I also bumped up a few of the complexity numbers in pyproject.toml. I always got a little thrill running `make` in my macOS terminal and seeing all those checks and tests.
 
 ```text
 % make
 mypy --config-file pyproject.toml src/ tests/
-Success: no issues found in 28 source files
+Success: no issues found in 29 source files
 ruff check --config ./pyproject.toml src/ tests/
 All checks passed!
 pylint --rcfile pyproject.toml src/ tests/
@@ -100,64 +100,48 @@ pylint --rcfile pyproject.toml src/ tests/
 --------------------------------------------------------------------
 Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
 
-coverage run -m pytest --maxfail=1 -console_output_style=classic
-=================== test session starts ===================
+coverage run -m pytest --maxfail=1 -console_output_style=classic --junit-xml=.test-results.xml
+============================= test session starts ==============================
 platform darwin -- Python 3.12.1, pytest-8.3.2, pluggy-1.5.0
 rootdir: /Users/johnrobbins/Code/tbp
 configfile: onsole_output_style=classic
 plugins: anyio-4.4.0
-collected 280 items
+collected 290 items
 
-tests/cmd_lang_test.py ..........                   [  3%]
-tests/debugger_test.py .....................        [ 11%]
-tests/driver_test.py ........................       [ 19%]
-tests/helpers_test.py ...........                   [ 23%]
-tests/interpreter_test.py ......................... [ 32%]
-................................................    [ 49%]
-tests/lang_test.py ..                               [ 50%]
-tests/linter_test.py ..........................     [ 59%]
-tests/memory_test.py .                              [ 60%]
-tests/parser_test.py .............................. [ 70%]
-......................................              [ 84%]
-tests/scanner_test.py ............................. [ 94%]
-......                                              [ 96%]
-tests/symboltable_test.py ........                  [ 99%]
-tests/tokens_test.py .                              [100%]
+tests/cmd_lang_test.py ...........                                       [  3%]
+tests/controlkeys_test.py .......                                        [  6%]
+tests/debugger_test.py .......................                           [ 14%]
+tests/driver_test.py ........................                            [ 22%]
+tests/helpers_test.py ...........                                        [ 26%]
+tests/interpreter_test.py .............................................. [ 42%]
+...........................                                              [ 51%]
+tests/lang_test.py ..                                                    [ 52%]
+tests/linter_test.py ..........................                          [ 61%]
+tests/memory_test.py .                                                   [ 61%]
+tests/parser_test.py ................................................... [ 78%]
+.................                                                        [ 84%]
+tests/scanner_test.py ...................................                [ 96%]
+tests/symboltable_test.py ........                                       [ 99%]
+tests/tokens_test.py .                                                   [100%]
 
-=================== 280 passed in 0.95s ===================
-coverage report --precision=2 --show-missing --sort=Cover
+------ generated xml file: /Users/johnrobbins/Code/tbp/.test-results.xml -------
+============================= 290 passed in 1.06s ==============================
+coverage report --precision=2 --show-missing --sort=Cover --skip-covered
 Name                        Stmts   Miss Branch BrPart   Cover   Missing
 ------------------------------------------------------------------------
-src/tbp/helpers.py             78      6     20      1  92.86%   175-179, 223-224
-src/tbp/driver.py             216      4    108      6  96.91%   86->88, 89->91, 138, 166, 311-312, 389->exit, 421->exit
+src/tbp/helpers.py             79      4     22      1  95.05%   21-23, 231-232
 src/tbp/astprinter.py         142      3     28      2  97.06%   111-112, 277
-src/tbp/interpreter.py        499      5    186      7  98.25%   201->205, 356->360, 415->420, 578->exit, 600->603, 1047-1048, 1134-1136
-src/tbp/parser.py             275      3    116      2  98.72%   359->364, 486-488, 509->526
+src/tbp/driver.py             237      2    120      8  97.20%   87->89, 90->92, 128->112, 142->112, 180, 211, 436->exit, 466->exit
+src/tbp/parser.py             275      3    116      2  98.72%   357->362, 484-486, 507->524
+src/tbp/interpreter.py        495      2    186      6  98.83%   209->213, 359->363, 418->423, 581->exit, 603->606, 1053-1054
 src/tbp/languageitems.py      170      1      8      1  98.88%   192
 src/tbp/scanner.py            242      1    128      3  98.92%   211->exit, 320, 356->360
+tests/controlkeys_test.py      88      0     20      1  99.07%   72->exit
 tests/interpreter_test.py     510      0     14      2  99.62%   885->exit, 904->exit
-src/tbp/__init__.py             3      0      0      0 100.00%
-src/tbp/errors.py              17      0      0      0 100.00%
-src/tbp/linter.py             107      0     32      0 100.00%
-src/tbp/memory.py              16      0      4      0 100.00%
-src/tbp/symboltable.py         30      0     16      0 100.00%
-src/tbp/tokens.py              51      0      2      0 100.00%
-tests/cmd_lang_test.py        101      0      0      0 100.00%
-tests/debugger_test.py        177      0     42      0 100.00%
-tests/driver_test.py          203      0     34      0 100.00%
-tests/helpers_test.py          85      0      2      0 100.00%
-tests/lang_test.py             10      0      0      0 100.00%
-tests/linter_test.py          217      0     52      0 100.00%
-tests/memory_test.py           11      0      4      0 100.00%
-tests/parser_test.py          348      0     44      0 100.00%
-tests/programs.py               4      0      0      0 100.00%
-tests/scanner_test.py         430      0     18      0 100.00%
-tests/symboltable_test.py      43      0     10      0 100.00%
-tests/tokens_test.py            5      0      0      0 100.00%
 ------------------------------------------------------------------------
-TOTAL                        3990     23    868     24  99.03%
+TOTAL                        4117     16    914     26  99.17%
 
-1 empty file skipped.
+19 files skipped due to complete coverage.
 coverage lcov
 Wrote LCOV report to .coverage.lcov
 ```
@@ -228,7 +212,7 @@ One of the first things I learned on my Python journey is that there is far more
 
 Another key trick I employed simply trying to start learning Python pay for the [Kagi](https://kagi.com) search engine because it lets you easily [block sites](https://help.kagi.com/kagi/features/website-info-personalized-results.html#personalized-results) with low quality content from appearing in your search results. Additionally, Kagi has through its [Lenses](https://help.kagi.com/kagi/features/lenses.html) feature a fantastic way to limit searches to forums.
 
-The best way I can sum up the state of trying to learn Python in 2024 is to reference that meme of [How to Draw an Owl](https://www.reddit.com/r/pics/comments/d3zhx/how_to_draw_an_owl/). Step one is to draw a circle, step two is to draw the rest of the owl. This is **not** a joke. Once you understand [list comprehension](https://docs.python.org/3/glossary.html#term-list-comprehension), where do you go? As you can hopefully see with tbp, I think I've developed a passable understanding of the Python language, but the next step is missing. Where's the introduction to infrastructure? Where is the walk-through content on setting up your development environment? How do imports work? Why are there seemingly millions of package installers? Which one should I use? How do I set up projects with multiple modules? Why are there so many build/packaging systems? These are the questions I still have about *after* finishing tbp.
+The best way I can sum up the state of trying to learn Python in 2024 is to reference that meme of [How to Draw an Owl](https://www.reddit.com/r/pics/comments/d3zhx/how_to_draw_an_owl/). Step one is to draw a circle, step two is to draw the rest of the owl. This is **not** a joke. Once you understand [list comprehension](https://docs.python.org/3/glossary.html#term-list-comprehension), where do you go? As you can hopefully see with tbp, I think I've developed a passable understanding of the Python language, but the next step is missing. Where's the introduction to infrastructure? Where is the walk-through content on setting up your development environment? How do imports work? Why are there seemingly millions of package installers? Which one should I use? How do I set up projects with multiple modules? Why are there so many build systems? These are the questions I still have about *after* finishing tbp.
 
 Earlier I mentioned that I started tbp with all my code in a single directory and used pytest to run my code. That worked well, and my focus was completely on the problem domain of programming languages. As I get the scanner finished, and I am getting close to finishing the parser, I figure it's time for me to look at getting tbp set up as a module. Looking at projects on GitHub, I saw the source layout they used so moved the tbp source (`./src/tbp`) and test code (`./test`) to mimic those. That's when I got to find the unique Python joy of import problems. Visual Studio Code was happily showing me IntelliSense when I added a new test, but pytest just gave me errors whenever I tried to run tests. I spent hours trying to figure out the import problems until I gave up and put all code back in the same directory. At least I knew I could work on my problem, even though I knew I'm not being Pythonic.
 
@@ -250,6 +234,8 @@ Obviously, the Python community has done and will continue to do wonderful thing
 
 Please understand I'm just trying to report my story of trying to develop my first Python module as a novice Python developer in 2024. The problems might be all on me, but it felt much harder than it should have been. Python desperately needs an equivalent to Rust's glorious [Cargo Book](https://doc.rust-lang.org/cargo/).
 
+After a couple of weeks in GitHub Actions land, see below, I see our friends at [Astral](https://astral.sh) have released [uv](https://docs.astral.sh/uv/), which based on what I'm seeing on blogs and social media, is garnering massive amounts of excitement. Sadly, I still can't find any overarching explanation of how I, a Python novice, is supposed to create a project following best practices in order to take advantage of uv's speed and completeness. It feels like the Python community has all of this information in their bones, but why can't it be shared for novices like me?
+
 ## GitHub and GitHub Actions
 
 While I started development before git was a gleam in Linus Torvalds' eye, I'd used git and GitHub quite a bit back in the olden days. However, in the time I've been away from the world of coding, there's been some huge changes at GitHub. Like, :sparkles:WOW:sparkles: levels of changes! As keeping with my obsessive note-taking inclination, I wrote up my thoughts and bumps with the new amazing GitHub Actions, the security, and project management features. I'll also post this in the GitHub Actions discussion area in the hopes it helps the product team. Especially as I'm a first-time user of GitHub Actions, which must make me a unicorn in today's dev world.
@@ -270,7 +256,7 @@ The documentation has a [Use cases and examples](https://docs.github.com/en/acti
 
 In the overall [documentation](https://docs.github.com/en/actions) I found the organization a little confusing. For example, the [Writing workflows](https://docs.github.com/en/actions/writing-workflows) list what I assumed was a table of contents for 27 articles about workflows that you should read in order. For example, it lists [Using workflow templates](https://docs.github.com/en/actions/writing-workflows/using-workflow-templates) followed by [Choosing when your workflow runs](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs). However, reading [Using workflow templates](https://docs.github.com/en/actions/writing-workflows/using-workflow-templates), does not have any link for the [Choosing when your workflow runs](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs), those it does have links for other parts of the documentation. My goal was to read a logical flow through learning about workflows starting from zero, but I was wandering to places that assumed I'd read something else previously.
 
-The workflow documentation got into details quickly, when I was simply trying to get a handle on [Building and testing Python](https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-python). Personally, I feel it would be better to have a step-by-step tutorial of a simple calculator program. You start with the code, and you build the action step by step. The idea is that by the end the entire YAML file shows building, linting, and testing. The repository has everything in place so that PRs trigger the proper workflow and so on. That's what I ended up doing on a throw away repository to see how everything fit together. If this is something that GitHub doesn't feel is a good fit for the documentation, someone should do this in their blog as they would get a lot of traffic.
+The workflow documentation got into details quickly, when I was simply trying to get a handle on [Building and testing Python](https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-python). Personally, I feel it would be better to have a step-by-step tutorial of a simple calculator program. You start with the code, and you build the action step by step. The idea is that by the end the entire YAML file shows building, linting, and testing. The repository has everything in place so that PRs trigger the proper workflow and so on. That's what I ended up doing on a throw away repository to see how everything fit together. If this is something that GitHub doesn't feel is a good fit for the documentation, someone should do this in their blog as they would get a lot of traffic. KEY POINT: It has to be kept up to date!
 
 In all the documentation is pretty good, but a good walk through at the start would be great to have. The other issue is that the docs go deep fast, and I felt there's a lot of middle ground missing. I ended up with a monolithic workflow [file](https://github.com/John-Robbins/tbp/blob/b14ea797cb76c26c33005a4ce7ec768be4ec7a92/.github/workflows/Code-CI.yml) where I was installing, type checking, linting, testing, and producing code coverage on each operating system in the matrix. I knew that wasn't what I wanted in the long run but wasn't sure what the best practices were for a GitHub Action.
 
@@ -329,7 +315,7 @@ jobs:
 
 In the above example, I'm repeating the exact same setup each time. Does the `test-cov-job` always have to repeat the setup? Can the job assume the project is ready to go? I never found anything definitive in the documentation and looking through many examples, it seems you must repeat the setup every time. As I mentioned in the comment above, Always Repeat Yourself feels wrong to me.
 
-Thinking that [reusable workflows](https://docs.github.com/en/actions/sharing-automations/reusing-workflows) would be the answer, I went down that path. I wanted to encapsulate the common setup work, and pass in the `runs-on` value. Although it's been almost three years since someone asked, there's no official support for [array input type support](https://github.com/orgs/community/discussions/11692). I fumbled around with an [idea](https://github.com/orgs/community/discussions/11692#discussioncomment-3541856) I found in the actions discussions, but I could never get it to work. I gave up on reusable workflows and repeated myself because working code always wins.
+Thinking that [reusable workflows](https://docs.github.com/en/actions/sharing-automations/reusing-workflows) would be the answer, I went down that path. I wanted to encapsulate the common setup work, and pass in the `runs-on` value. Although it's been almost three years since someone asked, there's no official support for [array input type support](https://github.com/orgs/community/discussions/11692). I fumbled around with an [idea](https://github.com/orgs/community/discussions/11692#discussioncomment-3541856) I found in the actions discussions, but I could never get it to work. I gave up on reusable workflows and repeatedly repeated steps because working code always wins.
 
 After a bit of trial and error, I had two workflows, one for code and one for docs. They were working great where I could run them manually on branches, and automatically on pull requests and pushes to main. Life was good, and then my code workflow stopped working. My workflow worked on a Sunday and died on a Monday. Being brand new to workflows, I struggled for several hours as to why my artifact uploads no longer worked. Yeah, you know where this is going: [Upcoming breaking change: Hidden Files will be excluded by default](https://github.com/actions/upload-artifact/issues/602). Why did a breaking change not involve a major version bump? I'm old enough to remember when a [GitHub co-founder](http://tom.preston-werner.com/) first proposed [SemVer](https://semver.org/spec/v2.0.0.html), which I thought was a very good attempt at bringing sanity to version numbers. Is SemVer merely a suggestion at GitHub these days?
 
@@ -525,9 +511,9 @@ My original goal for tbp was to do a project with Tiny BASIC in three phases wit
 2. A virtual machine interpreter.
 3. A Tiny BASIC compiler to a virtual machine.
 
-I think tbp part 1 turned out OK, but there's plenty of room for improvement. Going into the project, I thought 60% of my problems would be on the programming languages side. I had no idea that the majority of problems would be basic infrastructure issues with Python. If I had started in C, I know I would have finished with phases 1 and a big chunk of 2 in the time it took me to get tbp done. I expected to be developing slower as I learned Python, but not this slow. Being completely truthful, Python has left a little bitterness in my mouth. I think, but don't know for sure, I've gotten over the first major Python development hurdle developing a module, but will I get over the next one as a novice Python developer? Given what I've gone through so far, I don't know whether I'll have the patience or energy to go through this again.
+I think tbp part 1 turned out OK, but there's plenty of room for improvement. Going into the project, I thought 60% of my problems would be on the programming languages side. I had no idea that the majority of problems would be basic infrastructure issues with Python. If I had started in C, I know I would have finished with phases 1 and a big chunk of 2 in the time it took me to get tbp done. I expected to be developing slower as I learned Python, but not this slow. I think, but don't know for sure, I've gotten over the first major Python development hurdle developing a module, but will I get over the next one as a novice Python developer? Given what I've gone through so far, I don't know whether I'll have the patience or energy to go through something like that again.
 
-When I tackle phases two and three, I'll probably use another language.
+When I tackle phases two and three, I'll most likely use another language.
 
 ---
 

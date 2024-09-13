@@ -14,9 +14,23 @@ permalink: faq
 
 ---
 
+## General Usage
+
+- How does tbp handle `CTRL+C` and `CTRL+D` (`CTRL+Z`, ENTER on Windows)?
+
+For tbp, the Python REPL served as a model. As a reminder, when you enter these keys, they are not entries, but generate exceptions. `CTRL+C` is [KeyBoardInterrupt](https://docs.python.org/3/library/exceptions.html#KeyboardInterrupt) and `CTRL+D` is [EOFError](https://docs.python.org/3/library/exceptions.html#EOFError).
+
+When you are at a normal tbp prompt, `tbp:>` or a breakpoint prompt, `DEBUG(410:>`, `CTRL+C` does nothing, but `CTRL+D` will immediately terminate the application.
+
+If a Tiny BASIC program is running, both `CTRL+C` and `CTRL+D` will break the program and reset tbp's internal state as though it was typed in or loaded.
+
+If you are in the middle of loading a file with [%loadfile](tbp-command-language#loading-files-loadfile--lf), a `CTRL+C` will abort file loading, reset the tbp internal state, and clear any loaded program from memory.
+
+Figuring out a way to test these keystrokes was quite the adventure. You can check out the hack by reading [controlkeys_test.py](https://github.com/John-Robbins/tbp/blob/main/tests/controlkeys_test.py).
+
 ## Tiny BASIC
 
-- Why is `Syntax Error: Error #020: LET is missing an '=', but found 'o` the most common error when entering code at the tbp prompt/?
+- Why is `Syntax Error: Error #020: LET is missing an '=', but found '{var}'` the most common error when entering code at the tbp prompt?
 
    Tiny BASIC allows two forms of `LET` statements:
 

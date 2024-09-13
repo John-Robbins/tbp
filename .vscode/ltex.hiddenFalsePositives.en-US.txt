@@ -33,3 +33,4 @@
 {"rule":"TOO_LONG_PARAGRAPH","sentence":"^\\Q^8: And pointing the fickle finger of blame!\\E$"}
 {"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
 {"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
+{"rule":"NON_STANDARD_WORD","sentence":"^\\QHow does tbp handle CTRL+C and CTRL+D (CTRL+Z, ENTER on Windows)?\\E$"}
