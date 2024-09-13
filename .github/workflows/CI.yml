@@ -276,11 +276,11 @@ jobs:
       # Get the code coverage data.
       run: |
         coverage combine
-        coverage report --precision=2 --show-missing --sort=Cover --skip-covered
+        coverage report --precision=2 --show-missing --sort=Cover --skip-covered >> $GITHUB_STEP_SUMMARY
         coverage json --fail-under=98
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
-        echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
+        echo "## Total Coverage: :fire: ${TOTAL_COVERAGE}% :fire:" >> $GITHUB_STEP_SUMMARY
     - name: "Make Coverage Badge"
       # Code coverage is only updated on main branch.
       if: (github.ref == 'refs/heads/main')
