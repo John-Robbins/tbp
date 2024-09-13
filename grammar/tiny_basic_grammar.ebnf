@@ -1,0 +1,77 @@
+(* The Extended Bacus-Naur Form grammar for Tiny BASIC in Python. *)
+(* You can test this grammar at http://instaparse.mojombo.com. *)
+(* This can also be tested here: https://mdkrajnak.github.io/ebnftest/. *)
+
+(* A Tiny BASIC program consists of lines. *)
+<program> ::= <line>+ EOF ;
+
+(* There's three types of lines, direct execution, program line, and *)
+(* just a line number (to delete a program line.*)
+<line> ::= (<statement> | <NUMBER> <statement> | <NUMBER> ) CRLF
+
+(* All the statements for the Tiny BASIC language. I used the Tiny BASIC *)
+(* User's Manual and looking at a lot of BASIC source code to validate how *)
+(*statements are used. I think this is close to the original specifications. *)
+<statement> ::=   "REM" <ANY_CHARACTER>*
+                | "RETURN"
+                | "CLEAR"
+                | "END"
+                | "INPUT" <identifier_list>
+                | "GOTO" <expression>
+                | "GOSUB" <expression>
+                | ("LET")? <IDENTIFIER> "=" <expression>
+                | "LIST" (<expression_list>)?
+                | "RUN" (<expression_list>)?
+                | ("PRINT" | "PR")  (<print_expressions>)?
+                | "IF" <expression> <relop> <expression> ("THEN")? <statement>
+                ;
+
+(* Tiny BASIC supports two functions. A random number generator and a *)
+(* function to invoke an assembly language subroutine. *)
+<function> ::=   "RND" "(" <expression> ")"
+               | "USR" "(" <expression_list> ")"
+               ;
+
+(* The usual expressions. *)
+<expression> ::= <term> ;
+<term> ::= <factor> (("+"|"-") <factor>)* ;
+<factor> ::= <unary> (("*"|"/") <unary>)* ;
+<unary> ::= ("+"|"-") <unary>
+            | <primary> ;
+<primary>    ::= <function>
+                 | <NUMBER>
+                 | <IDENTIFIER>
+                 | "(" <expression> ")"
+                 ;
+
+(* All the relational operations supported by the IF statement.*)
+<relop> ::= ("<" (">" | "=")?)
+          | (">" ("<" | "=")?)
+          | "="
+          ;
+
+(* The list of identifiers the INPUT command supports. *)
+<identifier_list> ::= <IDENTIFIER> ("," <IDENTIFIER>)* ;
+
+(* LIST and RUN support multiple expressions as arguments. For RUN, any *)
+(* arguments are cached and on the first INPUT statement, those values are *)
+(* placed in the identifiers specified as arguments to INPUT. *)
+<expression_list> ::= <expression> ("," <expression>)*
+
+(* PRINT has some special consideration as it is the only statement that can *)
+(* work with strings. *)
+<print_expressions> ::= (<STRING> | <expression>) ((","|";") (<STRING> | <expression>))* ;
+
+(* All the terminals. *)
+<IDENTIFIER> ::= #'[A-Z]'
+<NUMBER> ::= <DIGIT>+ ;
+<DIGIT> ::= #'[0-9]' ;
+<STRING> ::= '"' (<ANY_CHARACTER>)+ '"'
+
+(* This regex is here so https://github.com/Engelberg/instaparse is happy. *)
+(* It returns all the characters in the printable ASCII range. *)
+<ANY_CHARACTER> ::= #'[^~,]' ;
+(* The terminator for all lines *)
+CRLF ::= "\n" ;
+(* Finally, we are done parsing! *)
+EOF ::= epsilon ;
