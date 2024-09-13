@@ -162,7 +162,7 @@ class Scanner:
                 else:
                     self._report_error(
                         "Error #293: Syntax error - unexpected expression : "
-                        f"'{curr_character}'",
+                        f"{curr_character!r}",
                     )
 
     ###########################################################################

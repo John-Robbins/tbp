@@ -1091,8 +1091,9 @@ class Interpreter(Visitor):
             tokens = self._parser.parse_tokens(lex_tokens)
             for token in tokens:
                 self._evaluate(token)
-        except TbpBaseError:
+        except TbpBaseError as err:
             # The rhs value is invalid.
+            print_output(f"{err.friendly_name}: {err.message}\n")
             return_value = False
             msg = (
                 f"Error #351: Invalid value in INPUT: '{var_value}'. Setting "

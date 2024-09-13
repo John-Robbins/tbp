@@ -244,7 +244,7 @@ class Parser:
         # If we get here, we have a problem.
         self._report_error(
             "Error #293: Syntax error - "
-            f"unexpected expression '{self._peek().lexeme!s}'.",
+            f"unexpected expression {self._peek().lexeme!r}.",
         )
         return cast(LanguageItem, None)  # pragma: no cover
 
