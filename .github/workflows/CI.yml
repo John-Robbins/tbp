@@ -278,10 +278,9 @@ jobs:
       # as text and looks normal.
       run: |
         coverage combine
-        SURROUND_PART=$'\`\`\`\n'
-        echo $SURROUND_PART >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
         coverage report --precision=2 --show-missing --sort=Cover --skip-covered >> $GITHUB_STEP_SUMMARY
-        echo $SURROUND_PART >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
         coverage json --fail-under=98
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
