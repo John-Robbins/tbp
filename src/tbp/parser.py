@@ -480,11 +480,6 @@ class Parser:
 
         return If(previous.line, previous.column, lhs, operator, rhs, branch)
 
-    def _clear_statement(self: Parser) -> LanguageItem:
-        current = self._previous()
-        self._verify_line_finished()
-        return Clear(current.line, current.column)
-
     def _input_statement(self: Parser) -> LanguageItem:
         previous = self._previous()
         curr_var: Token = self._peek()

@@ -16,7 +16,6 @@ from tbp.languageitems import (
 )
 from tbp.parser import Parser
 from tbp.scanner import Scanner
-from tbp.tokens import Token
 
 if TYPE_CHECKING:
     from tbp.languageitems import (
@@ -43,6 +42,7 @@ if TYPE_CHECKING:
         Usr,
         Variable,
     )
+    from tbp.tokens import Token
 
 
 class AstPrinter(Visitor):
@@ -107,9 +107,6 @@ class AstPrinter(Visitor):
         expression: Literal,
     ) -> LanguageItem:
         """Process a hard coded number."""
-        if isinstance(expression.value, str) is True:
-            self._add_to_buffer(f'"{expression.value}"')
-            return self._common_return
         self._add_to_buffer(str(expression.value))
         return self._common_return
 
@@ -273,8 +270,6 @@ class AstPrinter(Visitor):
         for curr_arg, piece in enumerate(args):
             if isinstance(piece, LanguageItem):
                 piece.accept(self)
-            elif isinstance(piece, Token):
-                self._add_to_buffer(piece.lexeme)
             elif isinstance(piece, list):
                 if (length := len(piece)) > 0:
                     self._add_to_buffer("(")
