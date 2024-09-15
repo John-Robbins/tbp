@@ -60,7 +60,7 @@ It seemed nuts to put this up on PyPI, which is for important modules, not learn
 
 ### Cloning and Installing
 
-Download the code from the [Latest](https://github.com/John-Robbins/tbp/releases/latest) release. Expand the compressed file into a directory, then execute the following.
+Download the code from the [Latest Releases](https://github.com/John-Robbins/tbp/releases/latest). Expand the compressed file into a directory, then execute the following.
 
 ```bash
 % pip install .
@@ -70,7 +70,7 @@ Download the code from the [Latest](https://github.com/John-Robbins/tbp/releases
 
 ## :book: Documentation
 
-Everything about tbp is lovingly documented to death in the GitHub Pages for this repository: [https://John-Robbins.github.io/tbp](https://John-Robbins.github.io/tbp).
+Everything about tbp is lovingly documented to death in over 17,000 words in the GitHub Pages for this repository: [https://John-Robbins.github.io/tbp](https://John-Robbins.github.io/tbp).
 
 ## :clap: Acknowledgements
 
@@ -92,7 +92,7 @@ Marco's [TinyBasicBlazor](https://retrobits.altervista.org/tinybasicblazor/), a 
 
 ### :heart: YOU! :heart:
 
-Thank you so much for looking at tbp. It's my first Python project and first time using GitHub Actions so any feedback on what I can do better, or what I did wrong, greatly is appreciated. Hit me up in the [Issues](https://github.com/John-Robbins/tbp/issues).
+Thank you so much for looking at tbp. It's my first Python project and first time using GitHub Actions so any feedback on what I can do better, or what I did wrong, is greatly appreciated. Hit me up in the [Issues](https://github.com/John-Robbins/tbp/issues).
 
 *To all of you, thanks! I'm a Python beginner standing on the shoulders of giants!*
 

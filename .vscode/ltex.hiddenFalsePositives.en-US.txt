@@ -34,3 +34,4 @@
 {"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
 {"rule":"WORD_CONTAINS_UNDERSCORE","sentence":"^\\Q:crossed_fingers: (Thanks for your patience!)\\E$"}
 {"rule":"NON_STANDARD_WORD","sentence":"^\\QHow does tbp handle CTRL+C and CTRL+D (CTRL+Z, ENTER on Windows)?\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QIf you do forget to end on an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q statement, tbp handles that case correctly.\\E$"}

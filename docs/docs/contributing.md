@@ -20,8 +20,7 @@ Thank you so much for any and all contributions to Tiny BASIC in Python! As this
 Before submitting a pull request, please help me out by doing the following.
 
 - File an issue explaining the bug or mistake in the code.
-- If the issue is not following best practices, please explain what I did wrong or include a link to a website/repository showing why I need to make the change.
-- This is all about me learning after all, so I appreciate the pointers.
+- If the issue is not following best practices, please explain what I did wrong or include a link to a website/repository showing why I need to make the change. This is all about me learning after all, so I really appreciate the pointers.
 
 ## Setting Up Your Development Environment
 
@@ -29,7 +28,7 @@ All my development occurred on Python version 3.12.1, but any higher versions wi
 
 ### macOS Sonoma and Linux
 
-Note: I haven't tested these scripts on Linux, but they should work. Let me know if they don't.
+*Note: I haven't tested these scripts on Linux, but they should work. Let me know if they don't.*
 
 In the `./tools` directory are two shell scripts I used to jump set up my environment. First ensure that you don't have a virtual environment active. If you do, execute `deactivate`. In the tbp code root directory, run the following three commands in your terminal.
 
@@ -53,7 +52,7 @@ Note that I don't have a Windows computer, so I am going off memory and reading 
 
 For Windows, you will need to do the script steps manually in the tbp code root directory at a PowerShell command prompt.
 
-First look to see if the `VIRTUAL_ENV` is set, which says you have a virtual environment already active. Run the Windows equivalent to `deactivate` to disable that virtual environment.
+First look to see if the `VIRTUAL_ENV` environment variable exists, which indicates you have a virtual environment already active. Run the Windows equivalent to `deactivate` to disable that virtual environment.
 
 In your PowerShell command prompt, execute the following commands to create a virtual environment for tbp.
 
@@ -67,9 +66,9 @@ You may have to shut down and restart PowerShell.
 In your PowerShell command prompt, in the tbp code root directory, execute the following commands.
 
 ```powershell
-python -m pip install $dryrun --upgrade pip
-python -m pip install $dryrun .[dev]
-python -m pip install $dryrun --editable .
+python -m pip install --upgrade pip
+python -m pip install .[dev]
+python -m pip install --editable .
 ```
 
 ## Key Development Notes
@@ -77,7 +76,7 @@ python -m pip install $dryrun --editable .
 <!-- markdownlint-disable-next-line -->
 <span style="color:red">**UNIT TESTS AND CODE COVERAGE ARE EVERYTHING!**</span>
 
-At the time of this writing, there are 280 unit tests and the combined operating system code coverage of 99.92%. For any pull requests, I'll obviously be checking that any code changes have tests that execute the code. _No coverage, no merge._
+At the time of this writing, there are 290 unit tests and the combined operating system code coverage of 99.88% with 100% coverage for the tbp code. For any pull requests, I'll obviously be checking that any code changes have tests that execute the code. *No coverage, no merge!*
 
 If you have a version of `make` installed, the root directory has the `Makefile` that automates a ton of work for you. Simply running `make` will do the work of running `mypy`, `ruff`, `pylint`, `coverage.py`, and `pytest`.
 

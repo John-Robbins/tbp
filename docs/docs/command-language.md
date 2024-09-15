@@ -92,7 +92,7 @@ LINT #04: Potentially uninitialized variable 'B'.
 ---------------------------------^
 ```
 
-Ideally, the next step would be to build an engine that would walk the program looking for the execution flow to find if the program initializes a variable during a run. That's something I do want to look at.
+Ideally, the next step would be to build an engine that would walk the program looking for the execution flow to find if the program initializes a variable during a run. That's something I do want to look at in future versions of tbp.
 
 #### `%lint` Command Error Messages
 
@@ -108,11 +108,6 @@ Ideally, the next step would be to build an engine that would walk the program l
 Loads the specified file from disk. You must surround the filename by quote characters, which helps with filenames with spaces in them. After confirming the filename is valid, and the file exists, tbp resets the interpreter state to the equivalent to start up.
 
 When loading a file, tbp assumes all lines in the file are [Tiny BASIC language](tb-language) statements, so any tbp command language commands will be reported as an error.
-
-```text
-tbp:>%lf "./examples/srps.tbp"
-tbp:>
-```
 
 If the `run_on_load` option is true, the loaded file will automatically execute a [`RUN`](tb-language#run---execute-the-program-in-memory) statement. The default for `run_on_load` is false.
 
@@ -207,11 +202,11 @@ tbp:>run
 
 ## The Tiny BASIC in Python Debugger
 
-The tbp debugger is a full-featured debugger that allows breakpoints on lines, stepping, variable display, and call stack display. What more could a developer want? For this section, I will be debugging the [`pas.tbp`](https://github.com/John-Robbins/tbp/blob/main/examples/pas.tbp) program, which you can find in the tbp examples folder, if you would like to practice as you read along.
+The tbp debugger is a full-featured debugger that allows breakpoints on lines, stepping, variable display, and call stack display. What more could a developer want? For this section, I will be debugging [Winston (Winny) Weinert's](https://github.com/winny-/tinybasic.rkt) wonderful Pascal Triangle program, [`pas.tbp`](https://github.com/John-Robbins/tbp/blob/main/examples/pas.tbp), which you can find in the tbp examples folder, if you would like to practice as you read along.
 
 ### Setting and Listing Breakpoints: `%bp` | `%break`
 
-To start a debugging session, start by setting a breakpoint on the line number where you want to stop. In the example below, I wanted to set breakpoints on several lines of a loaded program.
+To enter a debugging session, start by setting a breakpoint on the line number where you want to stop. In the example below, I wanted to set breakpoints on several lines of a loaded program.
 
 ```text
 tbp:>list 180,220
@@ -275,7 +270,7 @@ Breakpoint: 200
 DEBUG(200):>
 ```
 
-When you hit a breakpoint, tbp displays the line in square brackets and changes the prompt to show you are in the debugger with `DEBUG` and the line number of the breakpoint. In this case, the prompt is `DEBUG(200):>`.
+When you hit a breakpoint, tbp displays the breakpoint line in square brackets and changes the prompt to show you are in the debugger with `DEBUG` and the line number of the breakpoint. In this case, the prompt is `DEBUG(200):>`.
 
 ### Show Variables: `%v` | `%vars`
 
