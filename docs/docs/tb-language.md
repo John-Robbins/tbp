@@ -20,9 +20,9 @@ This document describes the dialect for the Tiny BASIC language implemented by T
 
 Tiny Basic is, well, tiny! Compared to something like [Python's language reference](https://docs.python.org/3/reference/index.html), Tiny BASIC is 12 statements, two functions, and 26 succulent variables. Even that small, Tiny BASIC can still produce some fantastic programs, some of which you can see in the project's [examples](https://github.com/John-Robbins/tbp/tree/main/examples) folder. In this documentation, I want to cover salient points on how tbp implements the language. The original documentation of Dr. Tom Pittman's version is [The TINY BASIC User Manuel](http://www.ittybittycomputers.com/IttyBitty/TinyBasic/TBuserMan.htm) and is worth looking at for a deeper background. It is also interesting to learn about all the contortions necessary to smash a full interpreter into 4 kilobytes of memory.
 
-In tbp, I've mostly tried to stay to the size limitations of the original. Integers are 16-bit, so that's a number range of -32,768 to +32,767. Another limitation I've kept is "spaces are optional." Back in 1976, Tiny BASIC cared deeply about space and one of the ways the accomplished that was removing spaces in your programs. Thus, in Tiny BASIC, spaces are optional. By stripping out spaces, you could save considerable amounts of space. Pun intended! In the project [examples](https://github.com/John-Robbins/tbp/tree/main/examples) folder, you can find two Tic-Tac-Toe programs. The [readable one](https://github.com/John-Robbins/tbp/blob/main/examples/tic-tac-toe.tbp) has spaces, but [ttt-c.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/ttt-c.tbp) is the compressed version with spaces removed.
+In tbp, I've mostly tried to stay to the size limitations of the original. Integers are 16-bit, so that's a number range of -32,768 to +32,767. Another limitation I've kept is "spaces are optional." Back in 1976, Tiny BASIC cared deeply about space and one of the ways the accomplished that was removing spaces in your programs. Thus, in Tiny BASIC, spaces are optional. By stripping out spaces, you could save considerable amounts of space. Pun intended! In the project [examples](https://github.com/John-Robbins/tbp/tree/main/examples) folder, you can find two Tic-Tac-Toe programs. The [readable one](https://github.com/John-Robbins/tbp/blob/main/examples/tic-tac-toe.tbp) has spaces, but [ttt-c.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/ttt-c.tbp) is the compressed version with spaces removed. The readable version is 4,226 bytes where the compressed is 1,710 bytes.
 
-Why did they care about space so much back then? Tom Pittman uploaded a Tiny BASIC [programming manual](http://www.ittybittycomputers.com/IttyBitty/TinyBasic/ProgTB/ProgTB0.htm) for the [Netronics ELF](https://en.wikipedia.org/wiki/ELF_II), whose base model came with 256 bytes of RAM.[^2] Read that number in the last sentence slowly.
+Why did they care about space so much back then? Tom Pittman uploaded a Tiny BASIC [programming manual](http://www.ittybittycomputers.com/IttyBitty/TinyBasic/ProgTB/ProgTB0.htm) for the [Netronics ELF](https://en.wikipedia.org/wiki/ELF_II), whose base model came with 256 bytes of RAM.[^2] Read that number in the last sentence slowly. Every byte was sacred in the programming days of yesteryear!
 
 Below is an example of a valid Tiny BASIC source code line.
 
@@ -36,7 +36,7 @@ As spaces are optional, the line below is also valid in the language and tbp sto
 2   4   4   5   0    i F   V   / X     *2     *    Q >0  G    o  T  o   4   6  1  0
 ```
 
-If you looked closely at the second example, you might have noticed that Tiny BASIC is case-insensitive as well. You may not want to write code using either of the above as examples. Talk about a maintenance hell! [^3]
+If you looked closely at the second example, you might have noticed that Tiny BASIC is case-insensitive as well. You may not want to write code using either of the above as examples. Talk about a maintenance heck! [^3]
 
 ## Direct Execution vs. A Statement vs. Command Language
 
@@ -57,7 +57,7 @@ A * (I - J) / J
 
 The functions, `RND` and `USR` can also appear in expressions. See the discussion of those in the [Functions](#functions) section below.
 
-One very important difference between the original Tiny BASIC and the tbp implementation is that in tbp, it checks all variable access at runtime and if you did not initialize a variable, it's reported as a runtime error and your program terminates. The example below shows this checking.
+One very important difference between the original Tiny BASIC and the tbp implementation is that tbp checks all variable access at runtime and if you did not initialize a variable, it's reported as a runtime error. Your program execution terminates and at the tbp prompt, you can fix your program. The example below shows this checking.
 
 ```text
 tbp:>10 INPUT A
@@ -77,9 +77,9 @@ Additionally, the [`%lint`](tbp-command-language#linting-lint) command language 
 
 ### `REM` - Remark/Comment
 
-Documenting your code is crucial, and the `REM` statement is your tool. You can use `REM` as a direct execution statement if you want to leave notes to yourself at the tbp prompt. In your program, putting a line number in front of a comment and that comment will stay with the program even when saved and loaded from files.
+Documenting your code is crucial, and the `REM` statement is your tool. You can use `REM` as a direct execution statement if you want to leave notes to yourself at the tbp prompt, like I did in the awesome sizzle GIF in the project [README](https://github.com/John-Robbins/tbp/blob/main/README.md). In your program, putting a line number in front of a REM make it part of your program even when saved and loaded from files.
 
-In the original implementation of Tiny BASIC, when it loaded a line into memory, the interpreter would look to see if a line started with a number. If it did, the interpreter loaded the line into memory and didn't parse it until it executed. If a [`GOTO`](#goto---jump-to-line) jumped over that line, it never gets parsed. If you look at some original programs from the 1970s, there are lines like the following.
+In the original implementation of Tiny BASIC, when it loaded a line into memory, the interpreter would look to see if a line started with a number. If it did, the interpreter loaded the line into memory and didn't parse it until it executed. If a [`GOTO`](#goto---jump-to-line) jumped over that line, it was never parsed. If you look at some original programs from the 1970s, there are lines like the following.
 
 ```text
 130 .  0 IS EMPTY, 1 IS X. 3 TS O
@@ -88,7 +88,7 @@ In the original implementation of Tiny BASIC, when it loaded a line into memory,
 160 P IS POKE ROUTINE ADDRESS
 ```
 
-In tbp, I made the decision to parse lines when entered before storing them memory. Therefore, the above lines are syntax errors in tbp instead of runtime errors.
+In tbp, I made the decision to parse lines when entered before storing them memory. Therefore, the above lines are syntax errors in tbp instead of runtime errors. To fix the problem, add `REM` statements after the line number.
 
 ### `LET` - Assignment
 
@@ -104,7 +104,7 @@ The `LET` is optional for assignment, but I think it is good practice to include
 While you are debugging in tbp, you can use either form as direct execution statements to change variable values for testing and analysis as shown below.
 
 ```text
-tbp:>A=420
+tbp:>LET A=420
 tbp:>Z=999
 ```
 
@@ -117,7 +117,7 @@ INPUT A
 INPUT X, Y, Z
 ```
 
-After the `INPUT` statement, you specify the variables you want filled in by the user. The only values allowed are integers. However, you can build expressions as input so at a `INPUT` prompt, you could enter `(A*2/(X+3))`. The result of that expression evaluation becomes the value for the specified `INPUT` variable.
+After the `INPUT` statement, you specify the variables you want filled in by the user. The only values allowed for input are integers. However, you can build expressions as input so at a `INPUT` prompt, you could enter `(A*2/(X+3))`. The result of that expression evaluation becomes the value for the specified `INPUT` variable.
 
 The original Tiny BASIC simply shows a `?` when asking for input. In tbp, I show the variable the program is asking for because I found it helpful for debugging Tiny BASIC programs. In most cases you will see a single character in brackets like the following where I'm running the [prime-decomp.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/prime-decomp.tbp) program. The `[N]?` says the program is asking you for the `N` variable.
 
@@ -168,7 +168,7 @@ I treat that as a warning. The original Tiny BASIC had a scheme where it stored 
 
 ### `PRINT` - Output
 
-It might be nice show data to the user of your awesome Tiny BASIC program and that's your `PRINT` statement, which you can abbreviate to `PR` for space savings. This is the one statement that can work with string data. You may pass any sort of mix of strings, expressions, or the two print separators,`,` and `;`.
+It might be nice show data to the user of your awesome Tiny BASIC program and that's your `PRINT` statement, which you can abbreviate to `PR` for space savings. This is the one statement that can work with string data. You may pass any sort of mix of strings, expressions, or the two print separators,`,` (comma) and `;` (semicolon).
 
 ```text
 tbp:>PRINT A
@@ -288,9 +288,11 @@ IF expression rel_op expression statement
 Below are examples of valid `IF` statements.
 
 ```text
-IF A > 3 THEN PRINT "A > 3"
-IF N/P*P=N GOTO 350
-IF M * N > Q IF V <> (B/W) GOSUB 9540
+110 IF A > 3 THEN PRINT "A > 3"
+
+420 IF N/P*P=N GOTO 350
+
+1105 IF M * N > Q IF V <> (B/W) GOSUB 9540
 ```
 
 The last example is equivalent to the following in Python.
@@ -302,7 +304,7 @@ if ((M * N) > Q) and (V != (B/W)):
 
 ### `END` - End and Clean Up
 
-The `END` statement must be the last statement executed by your program as that tells the interpreter the program finished. That way the interpreter cleans up the call stack, runtime state, memory, and any one-shot breakpoints (used by the [`%step`](tbp-command-language#step-s--step) command language command) You may have multiple `END` statements in your program as needed.
+The `END` statement should be the last statement executed by your program as that tells the interpreter the program finished. That way the interpreter cleans up the call stack, runtime state, memory, and any one-shot breakpoints (used by the [`%step`](tbp-command-language#step-s--step) command language command). If you do forget to end on an `END` statement, tbp handles that case correctly. You may have multiple `END` statements as exit points in your program as needed.
 
 The [`%lint`](tbp-command-language#linting-lint) command built into tbp will ensure you have at least one `END` statement in your program but does not ensure it executes.
 
@@ -333,7 +335,7 @@ In the latter two `RUN` commands above, you see the parameter passing the statem
 
 ### `CLEAR` - Clear and Reset the Interpreter
 
-After executing a `CLEAR`, the entire program, its state, one-shot breakpoints, and call stacks return to the default state. Like the original Tiny BASIC, tbp **does not** reset any variables.
+After executing a `CLEAR`, the entire program, its state, one-shot breakpoints, and call stacks return to the default state. Like the original Tiny BASIC, tbp **does not** change any of the `A`-`Z` variables.
 
 The [`%lint`](tbp-command-language#linting-lint) command built into tbp will check the program in memory for `CLEAR` statements in a program, because you just don't want to do that.[^5]
 
@@ -417,7 +419,7 @@ The parameter to `RND` is the range and the random number returned is between $$
 
 Tiny BASIC, as you can see, has limitations. To allow features like manipulating memory and talking to hardware, the `USR` function let you incorporate machine code into the environment. You can read more about how you could use the original `USR` function in the [Tiny BASIC Experimenter's Kit](http://www.ittybittycomputers.com/IttyBitty/TinyBasic/TBEK.txt).
 
-The `USR` function depends heavily on the memory layout of Tiny BASIC. Since tbp is a tree walking interpreter, supporting the same would have been difficult and, honestly, pointless. With my goal of running as many of the original programs as I could in tbp, I implemented just enough to allow of `USR` to run the original [Adventure](https://github.com/John-Robbins/tbp/blob/main/examples/adventure.tbp), Conway's game of [Life](https://github.com/John-Robbins/tbp/blob/main/examples/life.tbp), and Tic-Tac-Toe games, but [readable](https://github.com/John-Robbins/tbp/blob/main/examples/tic-tac-toe.tbp) and [compressed](https://github.com/John-Robbins/tbp/blob/main/examples/ttt-c.tbp). In tbp, I supported the two key routines, reading a byte from memory, and writing a byte to memory. The read routine is at address 276 (0x114) and the write routine is at 280 (0x118). Those are the only two routine addresses allowed, and others cause an error.
+The `USR` function depends heavily on the memory layout of Tiny BASIC. Since tbp is a tree walking interpreter, supporting the same would have been difficult and, honestly, pointless. With my goal of running as many of the original programs as I could in tbp, I implemented just enough to allow of `USR` to run the original [Adventure](https://github.com/John-Robbins/tbp/blob/main/examples/adventure.tbp), Conway's game of [Life](https://github.com/John-Robbins/tbp/blob/main/examples/life.tbp), and Tic-Tac-Toe games, both [readable](https://github.com/John-Robbins/tbp/blob/main/examples/tic-tac-toe.tbp) and [compressed](https://github.com/John-Robbins/tbp/blob/main/examples/ttt-c.tbp). In tbp, I supported the two key routines, reading a byte from memory, and writing a byte to memory. The read routine is at address 276 (0x114) and the write routine is at 280 (0x118). Those are the only two routine addresses allowed, and others cause an error.
 
 By convention, Tiny BASIC programs used the `S` variable to hold the start of the Tiny BASIC interpreter in memory. For the Motorola 6800 CPU, that is 265 (0x100), and tbp does the same. There were different start addresses for different CPUs. Thus, `S+20` is the read byte routine, and `S+24` is routine to write a byte.
 

@@ -3,7 +3,7 @@
 ###############################################################################
 # Tiny BASIC in Python
 # Licensed under the MIT License.
-# Copyright (c) 2004 John Robbins
+# Copyright (c) 2024 John Robbins
 ###############################################################################
 from __future__ import annotations
 
@@ -118,17 +118,9 @@ def print_output(message: str) -> None:
 ###############################################################################
 
 
-def read_input(prompt: str) -> tuple[bool, str]:
+def read_input(prompt: str) -> str:
     """Read input from the user."""
-    result_str: str = ""
-    result_flag: bool = True
-
-    try:
-        result_str = input(prompt)
-    except (EOFError, KeyboardInterrupt):
-        result_flag = False
-
-    return result_flag, result_str
+    return input(prompt)
 
 
 # The minimum number of entries in the valid_input list for limit_input.
@@ -187,6 +179,8 @@ def limit_input(prompt: str, valid_input: list[str]) -> tuple[bool, str]:
         except (EOFError, KeyboardInterrupt):
             result_flag = False
             keep_asking = False
+            # Add a newline so we don't have the prompt looking weird.
+            print_output("\n")
 
     return False, ""
 
@@ -210,8 +204,10 @@ def save_program(filename: str, program: str) -> bool:
                 yes_no,
             )
             if (overwrite is False) or (res == "n"):
+                print_output("Program not saved.\n")
                 return False
         with the_file.open(mode="w", encoding="utf-8") as f:
+            print_output("Program saved.\n")
             f.write(program)
     except (RuntimeError, FileNotFoundError):
         print_output(f"CLE #12: Filename is invalid '{filename}'.\n")

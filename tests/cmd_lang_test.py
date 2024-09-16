@@ -3,7 +3,7 @@
 ###############################################################################
 # Tiny BASIC in Python
 # Licensed under the MIT License.
-# Copyright (c) 2004 John Robbins
+# Copyright (c) 2024 John Robbins
 ###############################################################################
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ _CMD_REGEX_STRING = r"""
 %(?P<cmd>
    help         |  \?      |
    quit         |  \bq\b   |
-   openfile     |  \bof\b  |
+   loadfile     |  \blf\b  |
    opt          |
    break        |  \bbp\b  |
    backtrace    |  \bbt\b  |
@@ -27,7 +27,8 @@ _CMD_REGEX_STRING = r"""
    lint         |
    savefile     |  \bsf\b  |
    step         |  \bs\b   |
-   vars         |  \bv\b
+   vars         |  \bv\b   |
+   exit         |  \be\b
  )
 \s*
 (?P<param>
@@ -74,15 +75,15 @@ def test_quit() -> None:
     assert m is None
 
 
-def test_openfile() -> None:
+def test_loadfile() -> None:
     """Test '%openfile'."""
-    m = _CMD_REGEX.match('%openfile "somefile"')
+    m = _CMD_REGEX.match('%loadfile "somefile"')
     assert m is not None
-    assert m.group(_CMD_GROUP) == "openfile"
+    assert m.group(_CMD_GROUP) == "loadfile"
     assert m.group(_PARAM_GROUP) == '"somefile"'
-    m = _CMD_REGEX.match('%of "blah"')
+    m = _CMD_REGEX.match('%lf "blah"')
     assert m is not None
-    assert m.group(_CMD_GROUP) == "of"
+    assert m.group(_CMD_GROUP) == "lf"
     assert m.group(_PARAM_GROUP) == '"blah"'
     m = _CMD_REGEX.match("%open 100")
     assert m is None
@@ -164,11 +165,21 @@ def test_step() -> None:
     assert m.group(_CMD_GROUP) == "s"
 
 
-def test_info() -> None:
-    """Test '%step'."""
-    m = _CMD_REGEX.match("%step")
+def test_vars() -> None:
+    """Test '%vars'."""
+    m = _CMD_REGEX.match("%vars")
     assert m is not None
-    assert m.group(_CMD_GROUP) == "step"
-    m = _CMD_REGEX.match("%s")
+    assert m.group(_CMD_GROUP) == "vars"
+    m = _CMD_REGEX.match("%v")
     assert m is not None
-    assert m.group(_CMD_GROUP) == "s"
+    assert m.group(_CMD_GROUP) == "v"
+
+
+def test_exit() -> None:
+    """Test '%exit'."""
+    m = _CMD_REGEX.match("%exit")
+    assert m is not None
+    assert m.group(_CMD_GROUP) == "exit"
+    m = _CMD_REGEX.match("%e")
+    assert m is not None
+    assert m.group(_CMD_GROUP) == "e"

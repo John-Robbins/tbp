@@ -3,7 +3,7 @@
 ###############################################################################
 # Tiny BASIC in Python
 # Licensed under the MIT License.
-# Copyright (c) 2004 John Robbins
+# Copyright (c) 2024 John Robbins
 ###############################################################################
 from __future__ import annotations
 
@@ -62,6 +62,7 @@ class Driver:
         # user can change this with: %opt run_file_load t|f
         self._run_after_file_load: bool = False
 
+    # pylint: disable=too-complex, too-many-branches
     def party_like_it_is_1976(self: Driver, options: Options) -> int:
         """
         Entry point for the Tree Walking Interpreter.
@@ -97,7 +98,9 @@ class Driver:
             input_list = options.commands.split("^")
             cmds_to_run.extend(input_list)
 
-        # Run the commands starting with the %of if present.
+        exit_code: int = 0
+
+        # Run the commands starting with the %lf if present.
         for cmd in cmds_to_run:
             if self._execute_line(cmd) is False:
                 return 0
@@ -107,13 +110,52 @@ class Driver:
 
         # Run away!
         while continue_running is True:
-            prompt: str = self._build_prompt()
-            cmd_result, cmd_to_do = read_input(prompt)
-            if cmd_result is False:
-                break
-            continue_running = self._execute_line(cmd_to_do.strip())
+            try:
+                prompt: str = self._build_prompt()
+                cmd_to_do = read_input(prompt)
+                continue_running = self._execute_line(cmd_to_do.strip())
+            except (KeyboardInterrupt, EOFError) as exp:
+                # No matter what, we need to force a newline so the prompt
+                # doesn't stay on the same line looking ugly.
+                print_output("\n")
 
-        return 0
+                # Reminder:
+                #   CTRL+C generates a KeyboardInterrupt exception.
+                #   CTRL+D generates a EOFError exception.
+                # How we process these is all dependent on the current
+                # state.
+                if self._interpreter.current_state == Interpreter.State.RUNNING_STATE:
+                    if isinstance(exp, KeyboardInterrupt):
+                        print_output(
+                            "Keyboard Interrupt: Breaking out of program at line "
+                            f"{self._interpreter.current_line_number()}.\n",
+                        )
+                        self._interpreter.initialize_runtime_state()
+                elif self._interpreter.current_state in {
+                    Interpreter.State.LINE_STATE,
+                    Interpreter.State.BREAK_STATE,
+                }:
+                    if isinstance(exp, EOFError):
+                        print_output("EOF interrupt: exiting tbp.\n")
+                        exit_code = 1
+                        continue_running = False
+                elif self._interpreter.current_state in {
+                    Interpreter.State.FILE_STATE,
+                    Interpreter.State.ERROR_FILE_STATE,
+                } and isinstance(exp, KeyboardInterrupt):
+                    print_output(
+                        "Keyboard Interrupt: Aborting file loading, "
+                        "no program in memory.\n",
+                    )
+                    # It's a FILE_STATE or ERROR_FILE_STATE so cancel everything.
+                    self._interpreter.initialize_runtime_state()
+                    self._interpreter.clear_program()
+
+        print_output(
+            "\nThank you for using tbp! Your patronage is appreciated.\n",
+        )
+
+        return exit_code
 
     ###########################################################################
     # Private Helper Methods
@@ -124,7 +166,7 @@ class Driver:
         # This is what the prompt will be 99% of the time.
         prompt_str: str = Driver._DEFAULT_PROMPT
 
-        if self._interpreter.at_breakpoint() is True:
+        if self._interpreter.current_state == Interpreter.State.BREAK_STATE:
             # What source line have we stopped on?
             curr_line: int = self._interpreter.current_line_number()
             prompt_str = f"DEBUG({curr_line}):>"
@@ -140,7 +182,10 @@ class Driver:
         if cmd[0] == Driver._CMD_LANG_PREFIX:
             if self._process_command_language(cmd) == Driver.CmdResult.QUIT:
                 return False
-        elif self._interpreter.at_breakpoint() and cmd[0:3].lower() == "run":
+        elif (
+            self._interpreter.current_state == Interpreter.State.BREAK_STATE
+            and cmd[0:3].lower() == "run"
+        ):
             # We have one more check. If we are at a breakpoint and the user
             # entered the RUN statement, we don't want to do that because it
             # restarts the program. We want the user to use %c instead.
@@ -193,7 +238,8 @@ class Driver:
    lint         |
    savefile     |  \bsf\b  |
    step         |  \bs\b   |
-   vars         |  \bv\b
+   vars         |  \bv\b   |
+   exit         |  \be\b
  )
 \s*
 (?P<param>
@@ -214,21 +260,14 @@ class Driver:
 
     _CMD_REGEX = re.compile(_CMD_REGEX_STRING, re.IGNORECASE | re.VERBOSE)
 
-    # The circularity of the tools is weird. The Ruff warning suppression has
-    # to appear at the end of the line, but that makes the line too long for
-    # pylint. 🤷🏾‍♀️
-
-    # C901: https://docs.astral.sh/ruff/rules/complex-structure/
-    # PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches/
-
+    # I've bumped up the Ruff defaults to branches and returns.
     # While it would be easy to disable these complexity rules, I still think
     # they are valuable as a reminder to keep an eye on the procedure. There's
     # probably some table driven way to simplify this code, but I think that
     # would veer into the maintenance hell mode. Sometimes case statements are
     # the best way to go.
 
-    # pylint: disable=line-too-long
-    def _process_command_language(self: Driver, cmd: str) -> Driver.CmdResult:  # noqa: C901, PLR0912
+    def _process_command_language(self: Driver, cmd: str) -> Driver.CmdResult:
         """Do the '%' commands."""
         # Pull out what the user want's to do.
         if (m := self._CMD_REGEX.match(cmd)) is None:
@@ -239,9 +278,6 @@ class Driver:
 
         match m.group(Driver._CMD_GROUP).lower():
             case "q" | "quit":
-                print_output(
-                    "\nThank you for using tbp! Your patronage is appreciated.\n",
-                )
                 return Driver.CmdResult.QUIT
             case "?":
                 print_output(Driver._SHORTHELP)
@@ -271,15 +307,26 @@ class Driver:
                 self._command_stepper(Interpreter.BreakContinueType.STEP)
             case "backtrace" | "bt":
                 self._command_stack()
+            case "exit" | "e":
+                self._command_exit_debugger()
             case _:  # pragma: no cover
                 pass  # pragma: no cover
 
         return Driver.CmdResult.CONTINUE
 
+    def _command_exit_debugger(self: Driver) -> None:
+        """Exit the debugger and returns to the tbp prompt."""
+        if self._interpreter.current_state != Interpreter.State.BREAK_STATE:
+            print_output("CLE #08: %exit command only works while debugging.\n")
+        else:
+            # The END statement already knows how to drop out of the debugger
+            # so I can use it here to do the work.
+            self._interpreter.interpret_line("END")
+
     def _command_stack(self: Driver) -> None:
         """Show the call stack."""
-        if self._interpreter.at_breakpoint() is False:
-            print_output("CLE #08: %bt command only works while debugging.\n")
+        if self._interpreter.current_state != Interpreter.State.BREAK_STATE:
+            print_output("CLE #08: %backtrace command only works while debugging.\n")
         else:
             res: str = self._interpreter.stack_string()
             print_output(res)
@@ -289,10 +336,10 @@ class Driver:
         step_type: Interpreter.BreakContinueType,
     ) -> None:
         """Execute a single step."""
-        if self._interpreter.at_breakpoint() is False:
-            cmd: str = "%c"
+        if self._interpreter.current_state != Interpreter.State.BREAK_STATE:
+            cmd: str = "%continue"
             if step_type == Interpreter.BreakContinueType.STEP:
-                cmd = "%s"
+                cmd = "%step"
             print_output(f"CLE #08: {cmd} command only works while debugging.\n")
             return
 
@@ -373,7 +420,7 @@ class Driver:
     def _command_loadfile(self: Driver, filename: str) -> None:
         """Load a program from disk."""
         # If we are debugging, %openfile can't be used.
-        if self._interpreter.at_breakpoint() is True:
+        if self._interpreter.current_state == Interpreter.State.BREAK_STATE:
             self._command_language_error("CLE #15: %loadfile disabled while debugging.")
             return
         # Is the filename empty?
@@ -389,9 +436,7 @@ class Driver:
         if program := load_program(filename):
             self._load_program_and_run(program)
 
-    # PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches/
-    # C901: https://docs.astral.sh/ruff/rules/complex-structure/
-    def _command_opt(self: Driver, option: str, value: str) -> None:  # noqa: C901, PLR0912
+    def _command_opt(self: Driver, option: str, value: str) -> None:
         """Change run on load and timing options."""
         if not (option := option.lower()):
             self._command_language_error("CLE #04: Required option is missing.")
@@ -438,7 +483,7 @@ class Driver:
     ###########################################################################
 
     _LOGO: str = f"""
-  Tiny BASIC in Python - github.com/John-Robbins/tbp
+  Tiny BASIC in Python - https://github.com/John-Robbins/tbp
    _______ ____
   |__   __|  _ \\
      | |  | |_) |_ __
@@ -517,10 +562,10 @@ class Driver:
 
 A complete Tiny BASIC interpreter and debugger.
 To learn more about the Tiny BASIC language, see the documentation at
-http://github.com/john-robbins/tbp/docs/tinybasic/tinybasic-users-manual.html
+https://john-robbins.github.io/tbp/tb-language
 
 To learn more about Tiny BASIC in Python, see the extensive documentation at
-http://github.com/john-robbins/tbp/docs/
+https://john-robbins.github.io/tbp/
 
 Command Line Options
 --------------------
@@ -584,6 +629,8 @@ Debugging Commands
      - Displays all the initialized variables.
 %bt | %backtrace
      - Display the call stack.
+%e  | %exit
+     - Exit the debugger and return to tbp prompt.
 """
 
     _SHORTHELP: str = """
@@ -618,4 +665,6 @@ Debugging Commands
      - Displays all the initialized variables.
 %bt | %backtrace
      - Display the call stack.
+%e  | %exit
+     - Exit the debugger and return to tbp prompt.
 """

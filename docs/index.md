@@ -25,15 +25,17 @@ Any problems/confusion? Please file an [issue](https://github.com/John-Robbins/t
 
 The links on the left of this page have detailed discussion of installation, usage, the [Tiny BASIC language](tb-language), and the [tbp command language](tbp-command-language) that controls the programming environment.
 
+When using tbp, use the `%help` command to get links to the documentation, and help on the tbp command language.
+
 ### Prompts and Command Line Editing
 
 In tbp you will see various command line prompts.
 
 - `tbp:>` - The normal tbp prompt where you can enter both the Tiny BASIC language and the tbp command language.
 - `[A]?` - This prompt says a program is asking you for input with the [`INPUT`](tb-language#input---asking-the-user) Tiny BASIC statement.
-- `DEBUG(213):>` - When you stop at a breakpoint, this prompt shows the line number you stopped on. In this case, it is line `213` in your program. See the [tbp debugger](tbp-command-language#the-tiny-basic-in-python-debugger) documentation for details about the debugger commands and help debugging.
+- `DEBUG(420):>` - When you stop at a breakpoint, this prompt shows the line number you stopped on. In this case, it is line `420` in your Tiny BASIC program. See the [tbp debugger](tbp-command-language#the-tiny-basic-in-python-debugger) documentation for details about the debugger commands and help debugging.
 
-The tbp command line uses Python's [readline](https://docs.python.org/3/library/readline.html#module-readline) module so all the normal editing, copy, paste, and arrow keys work.
+The tbp command line uses Python's [readline](https://docs.python.org/3/library/readline.html#module-readline) module on macOS and Linux, and [pyreadline3](https://pypi.org/project/pyreadline3/) on Windows, so all the normal editing, copy, paste, and arrow keys work.
 
 ## Example Programs
 
@@ -43,14 +45,14 @@ The [examples](https://github.com/John-Robbins/tbp/blob/main/examples) directory
   - Tiny Adventure game from [The First Book of Tiny BASIC Programs](https://www.retrotechnology.com/memship/Son_of_TFBOTBAS.HTM#chapter6) by Tom Pittman. This is a complicated game so read the documentation before playing.
 - [deep.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/deep.tbp)
   - A test program for the tbp debugger that generates a deep call stack.
-- [eurphoria.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/eurphoria.tbp)
+- [eurphoria.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/euphoria.tbp)
   - Kingdom of Euphoria game from [The First Book of Tiny BASIC Programs](https://www.retrotechnology.com/memship/Son_of_TFBOTBAS.HTM#chapter3) by Tom Pittman.
 - [fib.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/fib.tbp)
   - Generates Fibonacci numbers. From the excellent [Marco's Retrobits](HTTPS://RETROBITS.ALTERVISTA.ORG).
 - [fizzbuzz.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/fizzbuzz.tbp)
   - An implementation of [Fizz Buzz](https://en.wikipedia.org/wiki/Fizz_buzz) from the always fascinating [Rosetta Code](https://rosettacode.org/wiki/Rosetta_Code). The original implementation is [here](https://rosettacode.org/wiki/FizzBuzz/Basic#Tiny_BASIC). I updated the code to use line numbers.
 - [fizzbuzz2.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/fizzbuzz2.tbp)
-  - Another implementation of [Fizz Buzz](https://en.wikipedia.org/wiki/Fizz_buzz) from [Winston (Winny) Weinert's](https://github.com/winny-/tinybasic.rkt/blob/master/tinybasic-examples/examples/fizzbuzz.rkt) very cool implementation of Tiny BASIC in Racket.
+  - Another implementation of [Fizz Buzz](https://en.wikipedia.org/wiki/Fizz_buzz) from [Winston (Winny) Weinert's](https://github.com/winny-/tinybasic.rkt/blob/master/tinybasic-examples/examples/fizzbuzz.rkt) very cool implementation of [Tiny BASIC in Racket](https://github.com/winny-/tinybasic.rkt).
 - [gotoheck.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/gotoheck.tbp)
   - A test program for the tbp debugger that implements all sorts of `GOTO`/`GOSUB` statements.
 - [life.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/life.tbp)
@@ -58,7 +60,7 @@ The [examples](https://github.com/John-Robbins/tbp/blob/main/examples) directory
 - [lintdemo.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/lintdemo.tbp)
   - A modified version of the Sum of Squares and Cube Digits (see below) to demonstrate tbp's `%lint` command.
 - [pas.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/pas.tbp)
-  - A fantastic implementation of [Pascal's Triangle](https://en.wikipedia.org/wiki/Pascal's_triangle) by [Winston (Winny) Weinert's](https://github.com/winny-/tinybasic.rkt/blob/master/tinybasic-examples/examples/pascals-triangle.rkt) for his implementation of Tiny BASIC in Racket.
+  - A fantastic implementation of [Pascal's Triangle](https://en.wikipedia.org/wiki/Pascal's_triangle) by [Winston (Winny) Weinert's](https://github.com/winny-/tinybasic.rkt/blob/master/tinybasic-examples/examples/pascals-triangle.rkt) for his implementation of [Tiny BASIC in Racket](https://github.com/winny-/tinybasic.rkt).
 - [prime-decomp.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/prime-decomp.tbp)
   - An implementation if [integer factorization](https://en.wikipedia.org/wiki/Integer_factorization) originally from [Rosetta Code](https://rosettacode.org/wiki/Prime_decomposition#Tiny_BASIC). I changed the program to make the output cooler.
 - [rand.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/rand.tbp)
@@ -77,6 +79,6 @@ The [examples](https://github.com/John-Robbins/tbp/blob/main/examples) directory
   - The *compressed* version of the [tic-tac-toe game](http://www.ittybittycomputers.com/IttyBitty/TinyBasic/TicTac.htm) from the January 19, 1977, issue of the Homebrew Computer Club Newsletter by Tom Pittman.
 
 
-[^1]: Note that I am not a lawyer but feel it was OK to share other's work like this. If that's not a correct interpretation, let me know as soon as possible, and I will take these programs down.
+[^1]: Note that I am not a lawyer but feel it was OK to share other's work like this. If that's not a correct interpretation, let me know as soon as possible, and I will remove any requested by the authors.
 
 

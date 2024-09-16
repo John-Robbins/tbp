@@ -49,7 +49,7 @@ As tbp is a command line program, once you have it installed, you can simply run
      | |  | |_) | |_) |
      |_|  |____/| .__/
                 | |
-                |_| version 0.9.0.0
+                |_| version 1.0.0
    Party like it's 1976!
    Look at that cool CN tower in Toronto!
 
@@ -80,7 +80,7 @@ options:
 
 ### File to Load
 
-To start tbp with a program file ready to run, pass it on the command line.
+To start tbp with a program file ready to run, pass it on the command line. After tbp started and loaded the program, the example shows using the [`RUN`](tb-language#run---execute-the-program-in-memory) command to execute the loaded program.
 
 ```text
  % python -m tbp ./examples/rand.tbp
@@ -93,11 +93,11 @@ To start tbp with a program file ready to run, pass it on the command line.
      | |  | |_) | |_) |
      |_|  |____/| .__/
                 | |
-                |_| version 0.9.0.0
+                |_| version 1.0.0
    Party like it's 1976!
    What do I do with a $2.00 bill?
 
-tbp:>run
+tbp:>RUN
 69      12      83      53      59      16      62      36
 7       80      13      92      93      46      32      44
 36      54      71      26      58      0       56      28
@@ -113,10 +113,10 @@ tbp:>
 
 The `--commands` option allows you to specify any Tiny BASIC language statements or tbp command language commands you want to run at startup. Separate the commands with the `^` character.
 
-In the following example, it shows starting up with the [tbp.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/tbp.tbp) example program but using `--commands` to run the [`LIST`](tb-language#list---display-the-program-in-memory) statement followed by the [`%q`](tbp-command-language#quit-q) command.
+In the following example, it shows starting up with the [tbp.tbp](https://github.com/John-Robbins/tbp/blob/main/examples/tbp.tbp) example program but using `--commands` to run the Tiny BASIC [`LIST`](tb-language#list---display-the-program-in-memory) statement followed by the command language [`%quit`](tbp-command-language#quit-q) command.
 
 ```text
-% python -m tbp ./examples/tbp.tbp --commands LIST^%q
+% python -m tbp ./examples/tbp.tbp --commands LIST^%quit
 
   Tiny BASIC in Python - github.com/John-Robbins/tbp
    _______ ____
@@ -126,7 +126,7 @@ In the following example, it shows starting up with the [tbp.tbp](https://github
      | |  | |_) | |_) |
      |_|  |____/| .__/
                 | |
-                |_| version 0.9.0.0
+                |_| version 1.0.0
    Party like it's 1976!
    Star Wars Episode IV started filming. May the Force be with them.
 

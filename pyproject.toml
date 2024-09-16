@@ -138,6 +138,11 @@ strict = true
 [tool.ruff.lint.pylint]
 max-args = 6
 max-public-methods = 39
+max-branches = 16
+max-returns = 17
+
+[tool.ruff.lint.mccabe]
+max-complexity = 16
 
 [tool.ruff.lint.per-file-ignores]
 # S101: https://docs.astral.sh/ruff/rules/assert/
@@ -250,6 +255,7 @@ reportUnusedImport = false
 reportUnnecessaryComparison = false
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false
+typeCheckingMode = "strict"
 
 
 ####################

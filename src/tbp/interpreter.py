@@ -3,7 +3,7 @@
 ###############################################################################
 # Tiny BASIC in Python
 # Licensed under the MIT License.
-# Copyright (c) 2004 John Robbins
+# Copyright (c) 2024 John Robbins
 ###############################################################################
 from __future__ import annotations
 
@@ -144,6 +144,14 @@ class Interpreter(Visitor):
         self._one_shot_breakpoints: list[int] = []
 
     ###########################################################################
+    # PUBLIC: Interpret Properties
+    ###########################################################################
+    @property
+    def current_state(self: Interpreter) -> Interpreter.State:
+        """Return the current state."""
+        return self._the_state
+
+    ###########################################################################
     # PUBLIC: Interpret Methods
     ###########################################################################
 
@@ -222,33 +230,32 @@ class Interpreter(Visitor):
 
         """
         final_return: bool = True
-        try:
-            # Set the state flag so other methods know we are parsing a buffer.
-            self._the_state = Interpreter.State.FILE_STATE
-            # Set to False if there was an error parsing.
-            self._file_line = 1
 
-            # Fake reading this memory buffer as a file. I like this trick.
-            file = StringIO(source)
+        # Set the state flag so other methods know we are parsing a buffer.
+        self._the_state = Interpreter.State.FILE_STATE
+        # Set to False if there was an error parsing.
+        self._file_line = 1
 
-            current_line: str = file.readline()
-            while current_line:
-                # It's perfectly fine to have empty lines.
-                if (current_line != "\n") and (
-                    self.interpret_line(current_line) is False
-                ):
-                    self._the_state = Interpreter.State.ERROR_FILE_STATE
-                    final_return = False
-                current_line = file.readline()
-                self._file_line += 1
+        # Fake reading this memory buffer as a file. I like this trick.
+        file = StringIO(source)
 
-            if self._the_state == Interpreter.State.ERROR_FILE_STATE:
-                # Clear out any loaded program so we don't have half programs
-                # floating around.
-                self.clear_program()
-                self.initialize_runtime_state()
-        finally:
-            self._the_state = Interpreter.State.LINE_STATE
+        current_line: str = file.readline()
+        while current_line:
+            # It's perfectly fine to have empty lines.
+            if (current_line != "\n") and (self.interpret_line(current_line) is False):
+                self._the_state = Interpreter.State.ERROR_FILE_STATE
+                final_return = False
+            current_line = file.readline()
+            self._file_line += 1
+
+        if self._the_state == Interpreter.State.ERROR_FILE_STATE:
+            # Clear out any loaded program so we don't have half programs
+            # floating around.
+            self.clear_program()
+            self.initialize_runtime_state()
+
+        # We are done processing the file so go back to the normal state.
+        self._the_state = Interpreter.State.LINE_STATE
 
         return final_return
 
@@ -340,10 +347,6 @@ class Interpreter(Visitor):
 
         self._breakpoints.remove(line_number)
         return True, ""
-
-    def at_breakpoint(self: Interpreter) -> bool:
-        """Public method the driver can call to see the state."""
-        return self._the_state == Interpreter.State.BREAK_STATE
 
     def break_continue(self: Interpreter, step: Interpreter.BreakContinueType) -> None:
         """Tell the interpreter how to continue from a breakpoint."""
@@ -530,7 +533,7 @@ class Interpreter(Visitor):
 
         return False
 
-    def _set_one_shots(self: Interpreter) -> None:  # noqa: C901 pylint: disable=too-complex
+    def _set_one_shots(self: Interpreter) -> None:  # pylint: disable=too-complex
         """
         Find the address to step into.
 
@@ -923,7 +926,10 @@ class Interpreter(Visitor):
     def visit_end_statement(self: Interpreter, end: End) -> LanguageItem:
         """Process an END statement."""
         del end
-        if self._the_state == Interpreter.State.RUNNING_STATE:
+        if self._the_state in {
+            Interpreter.State.RUNNING_STATE,
+            Interpreter.State.BREAK_STATE,
+        }:
             # Clean up possible RUN parameters that were not used.
             self.initialize_runtime_state()
         return cast(End, None)  # pragma: no cover
@@ -1085,8 +1091,9 @@ class Interpreter(Visitor):
             tokens = self._parser.parse_tokens(lex_tokens)
             for token in tokens:
                 self._evaluate(token)
-        except TbpBaseError:
+        except TbpBaseError as err:
             # The rhs value is invalid.
+            print_output(f"{err.friendly_name}: {err.message}\n")
             return_value = False
             msg = (
                 f"Error #351: Invalid value in INPUT: '{var_value}'. Setting "
@@ -1127,13 +1134,7 @@ class Interpreter(Visitor):
                 # Build up the prompt.
                 prompt_text = self._build_input_prompt(curr_index, input_stmt.variables)
                 # Ask the user for input.
-                input_good, raw_text = read_input(prompt_text)
-                if input_good is False:
-                    # Indicate to the rest of the interpreter that the user hit
-                    # CTRL+C or CTRL+D.
-                    self.initialize_runtime_state()
-                    print_output("Error #350: Aborting RUN from INPUT entry.\n")
-                    return cast(Input, None)
+                raw_text = read_input(prompt_text)
 
                 # Split the input string on commas.
                 raw_list = raw_text.split(",")

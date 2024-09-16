@@ -273,14 +273,18 @@ jobs:
         pattern: covdata-*
         merge-multiple: true
     - name: "Combine and Report"
-      # Get the code coverage data.
+      # Get the code coverage data. Since GITHUB_STEP_SUMMARY is markdown, I
+      # need to add the ```test...``` around the report output so it's rendered
+      # as text and looks normal.
       run: |
         coverage combine
-        coverage report --precision=2 --show-missing --sort=Cover --skip-covered
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        coverage report --precision=2 --show-missing --sort=Cover --skip-covered >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
         coverage json --fail-under=98
         export TOTAL_COVERAGE=$(python -c "import json;print(round(float(json.load(open('coverage.json'))['totals']['percent_covered']),2))")
         echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
-        echo "## Total coverage: :fire: ${TOTAL_COVERAGE}% :fireworks:" >> $GITHUB_STEP_SUMMARY
+        echo "## Total Coverage: :fire: ${TOTAL_COVERAGE}% :fire:" >> $GITHUB_STEP_SUMMARY
     - name: "Make Coverage Badge"
       # Code coverage is only updated on main branch.
       if: (github.ref == 'refs/heads/main')

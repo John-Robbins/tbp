@@ -3,7 +3,7 @@
 ###############################################################################
 # Tiny BASIC in Python
 # Licensed under the MIT License.
-# Copyright (c) 2004 John Robbins
+# Copyright (c) 2024 John Robbins
 ###############################################################################
 
 from __future__ import annotations
@@ -196,15 +196,16 @@ def test_not_debugging_commands(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test the all the debugger commands fail when not debugging."""
-    cmds = iter(["%c", "%s", "%bt", "%q"])
+    cmds = iter(["%c", "%s", "%bt", "%e", "%q"])
     driver: Driver = Driver()
     monkeypatch.setattr("builtins.input", lambda _: next(cmds))
     ret: int = driver.party_like_it_is_1976(empty_opts)
     output = capsys.readouterr()
     assert ret == 0
-    assert "CLE #08: %c" in output.out
-    assert "CLE #08: %s" in output.out
-    assert "CLE #08: %bt" in output.out
+    assert "CLE #08: %continue" in output.out
+    assert "CLE #08: %step" in output.out
+    assert "CLE #08: %backtrace" in output.out
+    assert "CLE #08: %exit" in output.out
 
 
 def test_simple_breakpoint_commands(
@@ -427,3 +428,58 @@ def test_open_file_while_debugging(
     output = capsys.readouterr()
     assert ret == 0
     assert "CLE #15: %loadfile disabled while debugging." in output.out
+
+
+def test_debugging_exit(
+    capsys: CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test %exit command."""
+    cmds = iter(
+        [
+            "10 GOSUB 40",
+            "20 END",
+            '40 PR "Scout"',
+            "50 RETURN",
+            "%bp 10",
+            "RUN",
+            "%exit",
+            "%continue",
+            "%quit",
+        ],
+    )
+    driver: Driver = Driver()
+    monkeypatch.setattr("builtins.input", lambda _: next(cmds))
+    ret: int = driver.party_like_it_is_1976(empty_opts)
+    output = capsys.readouterr()
+    assert ret == 0
+    assert "CLE #08: %continue" in output.out
+
+
+def test_debugging_invalid_bp_delete(
+    capsys: CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test %d <invalid> command."""
+    cmds = iter(
+        [
+            "10 GOSUB 40",
+            "20 END",
+            '40 PR "Scout"',
+            "50 RETURN",
+            "%bp 10",
+            "%d log",
+            "%exit",
+            "%continue",
+            "%quit",
+        ],
+    )
+    driver: Driver = Driver()
+    monkeypatch.setattr("builtins.input", lambda _: next(cmds))
+    ret: int = driver.party_like_it_is_1976(empty_opts)
+    output = capsys.readouterr()
+    assert ret == 0
+    assert (
+        "CLE #05: %break and %delete commands require line numbers as parameters:"
+        in output.out
+    )
