@@ -93,7 +93,7 @@ jobs:
     steps:
     # Check out the code as that's needed for a push trigger.
     - name: "Checkout Code"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     # Now do the filtering so we can appropriately decide which jobs need to
     # be run.
     - name: "Filter Files"
@@ -136,7 +136,7 @@ jobs:
     # I tried to make these a reusable job, but GitHub Actions wants to
     # force you to ARY: Always Repeat Yourself. 😹😹
     - name: "Checkout Code"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
@@ -170,7 +170,7 @@ jobs:
     steps:
     # Repeat ourselves again.
     - name: "Checkout Code"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: "Set up Python ${{ matrix.python-version }}"
       uses: actions/setup-python@v5
       with:
@@ -255,7 +255,7 @@ jobs:
     steps:
     # Repeat ourselves again.
     - name: "Checkout Code"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: "Set up Python 3.12"
       uses: actions/setup-python@v5
       with:
@@ -268,7 +268,7 @@ jobs:
     # The unique part of this job.
     - name: "Download Coverage Data"
       # Gather all those operating system coverage files.
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         pattern: covdata-*
         merge-multiple: true
@@ -320,7 +320,7 @@ jobs:
         working-directory: docs
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
