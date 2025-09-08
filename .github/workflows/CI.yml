@@ -138,7 +138,7 @@ jobs:
     - name: "Checkout Code"
       uses: actions/checkout@v5
     - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.12"
         cache: 'pip'
@@ -172,7 +172,7 @@ jobs:
     - name: "Checkout Code"
       uses: actions/checkout@v5
     - name: "Set up Python ${{ matrix.python-version }}"
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
@@ -257,7 +257,7 @@ jobs:
     - name: "Checkout Code"
       uses: actions/checkout@v5
     - name: "Set up Python 3.12"
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.12"
         cache: 'pip'
