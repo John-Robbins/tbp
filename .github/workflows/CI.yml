@@ -216,7 +216,7 @@ jobs:
         style: "flat-square"
     - name: "Upload Coverage Data"
       # Upload the coverage data for the coverage-job
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: covdata-${{ matrix.os }}
         path: .coverage*
@@ -268,7 +268,7 @@ jobs:
     # The unique part of this job.
     - name: "Download Coverage Data"
       # Gather all those operating system coverage files.
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         pattern: covdata-*
         merge-multiple: true
